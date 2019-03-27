@@ -24,6 +24,11 @@ public class Utils {
     public static final String externalDate = "ExternalDate";
     public static final String externalWD = "ExternalWD";
     public static final String environment = "Environment";
+    //changes for revise target --> rssreviselogic
+    public static final String revInternalDate = "RevInternalDate";
+    public static final String revExternalDate = "RevExternalDate"; //-->ends
+
+
     
     public static String getMonthIdFromDate(String date) {
         String columnId = "";

@@ -17,7 +17,9 @@ public class KPIModel {
     String internalDate;
     String externalDate;
     String environment;
-
+    String revInternalDate;
+    String revExternalDate;
+    
     public String getEnvironment() {
         return environment;
     }
@@ -28,6 +30,22 @@ public class KPIModel {
 
     public String getInternalWD() {
         return internalWD;
+    }
+
+    public String getRevInternalDate() {
+        return revInternalDate;
+    }
+
+    public void setRevInternalDate(String revInternalDate) {
+        this.revInternalDate = revInternalDate;
+    }
+
+    public String getRevExternalDate() {
+        return revExternalDate;
+    }
+
+    public void setRevExternalDate(String revExternalDate) {
+        this.revExternalDate = revExternalDate;
     }
 
     public void setInternalWD(String internalWD) {
