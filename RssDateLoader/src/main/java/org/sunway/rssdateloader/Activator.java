@@ -1,5 +1,6 @@
 package org.sunway.rssdateloader;
 
+import org.sunway.rssdateloader.formdataloader.FormDataLoaderClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.osgi.framework.BundleActivator;
@@ -14,7 +15,7 @@ public class Activator implements BundleActivator {
         registrationList = new ArrayList<ServiceRegistration>();
 
         //Register plugin here
-        registrationList.add(context.registerService(PluginMainClass.class.getName(), new PluginMainClass(), null));
+        registrationList.add(context.registerService(FormDataLoaderClass.class.getName(), new FormDataLoaderClass(), null));
     }
 
     public void stop(BundleContext context) {

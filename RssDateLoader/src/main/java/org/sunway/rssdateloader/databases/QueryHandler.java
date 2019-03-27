@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.sunway.rssdateloader.QueryHandlerInterface;
+import org.sunway.rssdateloader.formdataloader.QueryHandlerInterface;
 import org.sunway.rssdateloader.models.KPIModel;
 import org.sunway.rssdateloader.utilities.Utils;
 

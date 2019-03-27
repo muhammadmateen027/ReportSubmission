@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sunway.rssdateloader;
+package org.sunway.rssdateloader.formdataloader;
 
 import java.sql.ResultSet;
 

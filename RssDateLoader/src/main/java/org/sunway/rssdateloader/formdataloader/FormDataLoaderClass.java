@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sunway.rssdateloader;
+package org.sunway.rssdateloader.formdataloader;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,7 +30,7 @@ import org.sunway.rssdateloader.utilities.Utils;
  * @pc omen
  * @author Mateen
  */
-public class PluginMainClass extends Element implements PluginWebSupport, QueryHandlerInterface {
+public class FormDataLoaderClass extends Element implements PluginWebSupport, QueryHandlerInterface {
 
     final String pluginName = "RSS - DateLoader";
     final String version = "2.0.0";
@@ -116,7 +116,7 @@ public class PluginMainClass extends Element implements PluginWebSupport, QueryH
                     phList.add(sortedDate);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(PluginMainClass.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FormDataLoaderClass.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -133,7 +133,7 @@ public class PluginMainClass extends Element implements PluginWebSupport, QueryH
            
         	qh.getKPIData(company, subject, dateArray[2], month);
         } catch (JSONException ex) {
-            Logger.getLogger(PluginMainClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormDataLoaderClass.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -145,9 +145,9 @@ public class PluginMainClass extends Element implements PluginWebSupport, QueryH
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(PluginMainClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormDataLoaderClass.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
-            Logger.getLogger(PluginMainClass.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FormDataLoaderClass.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         out.print(jSONArray);
