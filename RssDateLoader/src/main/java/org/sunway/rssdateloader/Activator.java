@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.sunway.rssdateloader.storebinder.StoreBinderMain;
 
 public class Activator implements BundleActivator {
 
@@ -16,6 +17,7 @@ public class Activator implements BundleActivator {
 
         //Register plugin here
         registrationList.add(context.registerService(FormDataLoaderClass.class.getName(), new FormDataLoaderClass(), null));
+        registrationList.add(context.registerService(StoreBinderMain.class.getName(), new StoreBinderMain(), null));
     }
 
     public void stop(BundleContext context) {

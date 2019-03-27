@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1552983447594
+Bnd-LastModified: 1553670088902
 Build-Jdk: 1.8.0_162
 Built-By: omen
 Bundle-Activator: org.sunway.rssdateloader.Activator
@@ -16,9 +16,8 @@ Embed-StripGroup: true
 Embed-Transitive: true
 Embedded-Artifacts: dependency/servlet-api-2.5.jar;g="javax.servlet";a="
  servlet-api";v="2.5"
-Export-Package: org.sunway.rssdateloader;uses:="javax.servlet.http,org.j
- oget.apps.form.model,org.joget.plugin.base,org.osgi.framework";version=
- "6.0.0"
+Export-Package: org.sunway.rssdateloader;uses:="org.osgi.framework";vers
+ ion="6.0.0"
 Import-Package: org.joget.report.dao,org.joget.report.model,org.joget.re
  port.service,org.joget.commons.util,org.joget.plugin.base,org.joget.plu
  gin.property.model,org.joget.plugin.property.service,org.joget.director
