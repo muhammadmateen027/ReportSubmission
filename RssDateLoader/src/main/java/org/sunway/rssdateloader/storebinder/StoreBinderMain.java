@@ -8,8 +8,10 @@ package org.sunway.rssdateloader.storebinder;
 import org.joget.apps.form.lib.WorkflowFormBinder;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
 import org.sunway.rssdateloader.databases.QueryHandler;
+import org.sunway.rssdateloader.utilities.Utils;
 
 /**
  *
@@ -18,6 +20,7 @@ import org.sunway.rssdateloader.databases.QueryHandler;
 public class StoreBinderMain extends WorkflowFormBinder {
 
     final String pliuginName = "RSS - CustomStoreBinder";
+
     public String getName() {
         return pliuginName;
     }
@@ -44,11 +47,13 @@ public class StoreBinderMain extends WorkflowFormBinder {
 
     @Override
     public FormRowSet store(Element element, FormRowSet rowSet, FormData formData) {
-        
-        String formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
-        if (formId.equalsIgnoreCase("request_detail_form")) {
-            RequestForm form = new RequestForm(rowSet);
-            form.performAction();
+
+        if (rowSet != null && !rowSet.isEmpty()) {
+            String formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
+            if (formId.equalsIgnoreCase("request_detail_form")) {
+                RequestForm form = new RequestForm(rowSet);
+                form.performAction();
+            }
         }
         FormRowSet fm = super.store(element, rowSet, formData);
         return fm;
