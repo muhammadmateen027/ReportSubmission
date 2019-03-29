@@ -28,12 +28,14 @@ public class RequestForm implements QueryHandlerInterface {
     }
 
     public void performAction() {
+        String isRevised = "No";
         FormRow row = rowSet.get(0);
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
-        
         String external_wd = row.getProperty("ext_wd");
         String external_date = row.getProperty("ext_date");
+        
+        String action = row.getProperty("controller");
 
         Utils.showMsg("external_date: "+external_date);
         
@@ -42,6 +44,14 @@ public class RequestForm implements QueryHandlerInterface {
         
         row.setProperty("f_ext_wd", external_wd);
         row.setProperty("f_ext_date", external_date);
+        
+        
+        if (action.equalsIgnoreCase("Revise Target")) {
+            isRevised = "Yes";
+            row.setProperty("revise_status", "Pending Approval");
+        } 
+        
+        row.setProperty("is_revised", isRevised);
         
     }
 
