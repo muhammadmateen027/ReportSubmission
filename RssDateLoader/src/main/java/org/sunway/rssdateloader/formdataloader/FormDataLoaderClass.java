@@ -211,6 +211,9 @@ public class FormDataLoaderClass extends Element implements PluginWebSupport, Qu
             }
 
             jSONObject.put(Utils.environment, rSet.getString("c_environment_id"));
+            jSONObject.put(Utils.managerName, rSet.getString("c_f_manager_name"));
+            jSONObject.put(Utils.managerId, rSet.getString("c_f_manager_id"));
+                    
         }
 
         return jSONObject;

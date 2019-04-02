@@ -8,6 +8,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.sunway.rssdateloader.excel.ExcelTemplate;
 import org.sunway.rssdateloader.loadDataKPI.LoadProfileDataClass;
+import org.sunway.rssdateloader.storebinder.MasterSetupClass;
 import org.sunway.rssdateloader.storebinder.StoreBinderMain;
 
 public class Activator implements BundleActivator {
@@ -22,6 +23,8 @@ public class Activator implements BundleActivator {
         registrationList.add(context.registerService(StoreBinderMain.class.getName(), new StoreBinderMain(), null));
 	registrationList.add(context.registerService(ExcelTemplate.class.getName(), new ExcelTemplate(), null));
         registrationList.add(context.registerService(LoadProfileDataClass.class.getName(), new LoadProfileDataClass(), null));
+        registrationList.add(context.registerService(MasterSetupClass.class.getName(), new MasterSetupClass(), null));
+        
 
     }
 

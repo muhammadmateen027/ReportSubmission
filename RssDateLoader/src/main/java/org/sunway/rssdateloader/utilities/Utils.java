@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import org.joget.commons.util.LogUtil;
+import org.joget.apps.form.model.FormData;
 
 /**
  *
@@ -56,6 +57,10 @@ public class Utils {
         else if(month.equalsIgnoreCase("11")) columnId = "c_december";
 
         return columnId;
+    }
+    
+    public static void showError(FormData mData, String elementId, String st) {
+        mData.addFormError(elementId, st);
     }
     
     public static String getDateFromWD(String date, int noOfDays, List<String> holidays) {

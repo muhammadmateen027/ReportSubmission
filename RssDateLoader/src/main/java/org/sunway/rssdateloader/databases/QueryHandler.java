@@ -31,6 +31,7 @@ public class QueryHandler {
     public QueryHandler(QueryHandlerInterface aClass) {
         this.queryHandlerInterface = aClass;
     }
+
     public void getPublicHolidays() {
         String query = "Select c_holiday_date from app_fd_cs_public_holiday order by c_holiday_date asc ";
         Connection con = getDatabaseConnection();
@@ -39,7 +40,26 @@ public class QueryHandler {
             PreparedStatement statement = con.prepareStatement(query);
             ResultSet rSet = statement.executeQuery();
             queryHandlerInterface.onHolidayCallBack(rSet);
-            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+    }
+
+    public void getEnvCompExistance(String company) {
+        String query = "SELECT EXISTS(SELECT 1 FROM app_fd_rss_cmpyEnv_table where c_comapny_id = ?) as existance ";
+        Connection con = getDatabaseConnection();
+
+        try {
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, company);
+            ResultSet rSet = statement.executeQuery();
+            queryHandlerInterface.onSuccess(rSet);
+
         } catch (SQLException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -51,7 +71,7 @@ public class QueryHandler {
 
     public JSONArray getKPIData(String comp, String sub, String year, String wdMonth) throws JSONException {
         JSONArray jArr = new JSONArray();
-        String query = "Select c_environment_id, c_kpi_target, " + wdMonth
+        String query = "Select distinct id, c_environment_id, c_f_manager_name, c_f_manager_id, c_kpi_target, " + wdMonth
                 + " from app_fd_rss_cmp_kpi_profile WHERE c_company_id = ? AND c_subject_id = ? AND c_year_id = ? ";
         Connection con = getDatabaseConnection();
 
@@ -76,7 +96,6 @@ public class QueryHandler {
         return jArr;
     }
 
-    
     private Connection getDatabaseConnection() {
         Connection con = null;
         DataSource ds = (DataSource) AppUtil.getApplicationContext().getBean("setupDataSource");
@@ -118,5 +137,5 @@ public class QueryHandler {
                 closeDatabaseConnection(con);
             }
         }
-}
+    }
 }
