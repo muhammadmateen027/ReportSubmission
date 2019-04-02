@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +35,13 @@ import org.sunway.rssdateloader.utilities.Utils;
 public class LoadProfileDataClass extends Element implements PluginWebSupport, QueryHandlerInterface{
     final String pluginName = "RSS - ManagerValue";
     final String version = "1.0.0";
-    JSONArray jSONArray1;
+    JSONArray jSONArray;
     QueryHandler qh = null;
+    List<String> mgrIdList=null;
+    List<String> mgrNameList=null;
+    List<String> tlList=null;
+    List<String> buFinanceList=null;
+
     PrintWriter out;
     String company;
     String subject;
@@ -76,7 +83,7 @@ public class LoadProfileDataClass extends Element implements PluginWebSupport, Q
         Utils.showMsg("company = " + company);
         Utils.showMsg("subject = " + subject);
         out = response.getWriter();
-        jSONArray1 = new JSONArray();
+        jSONArray = new JSONArray();
         if (!company.equalsIgnoreCase("") && !subject.equalsIgnoreCase("")) 
         {   
            Utils.showMsg("start");
@@ -84,36 +91,45 @@ public class LoadProfileDataClass extends Element implements PluginWebSupport, Q
            Utils.showMsg("done");
 
         } else {
-            out.print(jSONArray1);
+            out.print(jSONArray);
         }
 
     }  
     
      public void onSuccess(ResultSet rSet) {
         JSONObject jSONObject = new JSONObject();
+        mgrIdList = new ArrayList<String>();
+        mgrNameList=new ArrayList<String>();
+        tlList=new ArrayList<String>();
+        buFinanceList=new ArrayList<String>();
          try {
-            while (rSet.next()) {
+              while (rSet.next()) {
                 Utils.showMsg("Before getting object");
-                jSONObject.put(Utils.managerId, rSet.getString("c_manager_id"));
-                jSONObject.put(Utils.managerName, rSet.getString("c_manager_names"));
-                jSONObject.put(Utils.teamLead, rSet.getString("c_teamLead"));
-                jSONObject.put(Utils.buFinance, rSet.getString("c_buFinance"));
-
-                jSONArray1.put(jSONObject);
+                mgrIdList.add(rSet.getString("c_manager_id"));
+                Utils.showMsg("mgrList : "+mgrIdList);
+                mgrNameList.add(rSet.getString("c_manager_names"));
+                Utils.showMsg("mgrNameList : "+mgrNameList);
+                tlList.add(rSet.getString("c_teamLead"));
+                buFinanceList.add(rSet.getString("c_buFinance"));
             }
+                jSONObject.put(Utils.managerId, mgrIdList);
+                jSONObject.put(Utils.managerName, mgrNameList);
+                jSONObject.put(Utils.teamLead, tlList);
+                jSONObject.put(Utils.buFinance, buFinanceList);
 
+                jSONArray.put(jSONObject);
         } catch (SQLException ex) {
             Logger.getLogger(FormDataLoaderClass.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(LoadProfileDataClass.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        out.print(jSONArray1);
+        out.print(jSONArray);
     }
 
     public void onFailure() {
         Utils.showMsg("On Failure");
-        out.print(jSONArray1);
+        out.print(jSONArray);
     }
 
     public void onHolidayCallBack(ResultSet rSet) {
