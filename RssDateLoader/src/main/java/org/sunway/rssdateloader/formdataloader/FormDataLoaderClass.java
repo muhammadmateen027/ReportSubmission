@@ -196,6 +196,8 @@ public class FormDataLoaderClass extends Element implements PluginWebSupport, Qu
 
                 jSONObject.put(Utils.internalDate, Utils.arrangedDate(kpiDate));
                 jSONObject.put(Utils.internalWD, String.valueOf(noOfDays));
+                
+                jSONObject.put("target", "internal");
             } else if (kpi_target.equalsIgnoreCase("external")) {
                 kpiDate = Utils.getDateFromWD(Utils.arrangedDate(periodToDate), noOfDays, phList);
                 //changes for revise target --> rssreviselogic
@@ -208,6 +210,7 @@ public class FormDataLoaderClass extends Element implements PluginWebSupport, Qu
 
                 jSONObject.put(Utils.externalDate, Utils.arrangedDate(kpiDate));
                 jSONObject.put(Utils.externalWD, String.valueOf(noOfDays));
+                jSONObject.put("target", "external");
             }
 
             jSONObject.put(Utils.environment, rSet.getString("c_environment_id"));
