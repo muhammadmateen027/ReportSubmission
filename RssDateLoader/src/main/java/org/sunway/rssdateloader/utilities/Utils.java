@@ -26,7 +26,14 @@ public class Utils {
     public static final String environment = "Environment";
     //changes for revise target --> rssreviselogic
     public static final String revInternalDate = "RevInternalDate";
-    public static final String revExternalDate = "RevExternalDate"; //-->ends
+    public static final String revExternalDate = "RevExternalDate";
+    public static final String managerId = "ManagerId";
+    public static final String managerName = "ManagerName";
+
+    public static final String teamLead = "TeamLead";
+    public static final String buFinance = "BUFinance";
+
+//-->ends
 
 
     

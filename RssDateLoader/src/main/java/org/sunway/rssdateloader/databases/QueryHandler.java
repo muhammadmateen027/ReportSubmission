@@ -16,9 +16,7 @@ import org.joget.commons.util.LogUtil;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.sunway.rssdateloader.formdataloader.QueryHandlerInterface;
-import org.sunway.rssdateloader.models.KPIModel;
 import org.sunway.rssdateloader.utilities.Utils;
 
 /**
@@ -33,7 +31,6 @@ public class QueryHandler {
     public QueryHandler(QueryHandlerInterface aClass) {
         this.queryHandlerInterface = aClass;
     }
-
     public void getPublicHolidays() {
         String query = "Select c_holiday_date from app_fd_cs_public_holiday order by c_holiday_date asc ";
         Connection con = getDatabaseConnection();
@@ -98,4 +95,28 @@ public class QueryHandler {
             LogUtil.error(this.getClass().getName(), ex, ex.getMessage());
         }
     }
+
+    public void getManagerData(String comp, String sub) {
+        Utils.showMsg("query start");
+        String query = "Select distinct c_manager_id, c_manager_id, c_manager_names, c_teamLead,c_buFinance from app_fd_rss_kpiProfileSetup Where c_cmpy = ? AND c_sub = ? ";
+        Connection con = getDatabaseConnection();
+
+        try {
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, comp);
+            statement.setString(2, sub);
+            ResultSet rSet = statement.executeQuery();
+            if (rSet != null) {
+                queryHandlerInterface.onSuccess(rSet);
+            } else {
+                queryHandlerInterface.onFailure();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+}
 }
