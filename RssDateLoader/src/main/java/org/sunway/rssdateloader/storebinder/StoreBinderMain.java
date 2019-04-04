@@ -50,7 +50,7 @@ public class StoreBinderMain extends WorkflowFormBinder {
 
         if (rowSet != null && !rowSet.isEmpty()) {
             String formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
-            if (formId.equalsIgnoreCase("request_detail_form")) {
+            if (formId.equalsIgnoreCase("revise_target_form")) {
                 RequestForm form = new RequestForm(rowSet);
                 form.performAction();
             }
