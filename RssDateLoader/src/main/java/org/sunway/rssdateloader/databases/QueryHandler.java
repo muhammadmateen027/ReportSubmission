@@ -68,6 +68,30 @@ public class QueryHandler {
             }
         }
     }
+    
+    
+    public void updateHistoryLog(String uId, String parentId, String userName, String logStatus, String logRemarks) {
+        String query = "INSERT INTO app_audit_rss_historyLog (id, appDefId, rowId, loggedBy, logStatus, logRemarks) VALUES (?, ?, ?, ?, ?, ?)";
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+
+            stmtInsert.setString(1, uId);
+            stmtInsert.setString(2, "fssrss");
+            stmtInsert.setString(3, parentId);
+            stmtInsert.setString(4, userName);
+            stmtInsert.setString(5, logStatus);
+            stmtInsert.setString(6, logRemarks);
+            stmtInsert.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+    }
 
     public JSONArray getKPIData(String comp, String sub, String year, String wdMonth) throws JSONException {
         JSONArray jArr = new JSONArray();

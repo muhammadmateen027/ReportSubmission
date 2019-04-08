@@ -59,16 +59,8 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 form.performAction(id);
             }//check for manager action
             else if (formId.equalsIgnoreCase("managerViewForm")) {
-                FormRow row = rowSet.get(0);
-                String mgrAction = row.getProperty("actionButton");
-                if (mgrAction.equalsIgnoreCase("Approved")) {
-                    row.setProperty("status", "New");
-                    row.setProperty("revise_status", "");
-                    row.setProperty("isRevised", "No");
-                } else if (mgrAction.equalsIgnoreCase("Reject")) {
-                    row.setProperty("status", "Manager Rejected");
-                }
-
+                ManagerFormClass managerFormClass = new ManagerFormClass(rowSet);
+                managerFormClass.formAction();
             }//check for BUFinance Approval
             else if (formId.equalsIgnoreCase("tlViewForm")) {
                 FormRow row = rowSet.get(0);
