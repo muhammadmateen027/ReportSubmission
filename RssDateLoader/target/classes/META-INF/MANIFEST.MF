@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1554349585625
+Bnd-LastModified: 1554691487333
 Build-Jdk: 1.8.0_162
 Built-By: omen
 Bundle-Activator: org.sunway.rssdateloader.Activator
