@@ -58,7 +58,7 @@ public class RequestForm implements QueryHandlerInterface {
             row.setProperty("f_ext_wd", rev_ext_wd);
             row.setProperty("f_ext_date", rev_ext_date);
 
-            row.setProperty("revise_status", "Pending Approval");
+            row.setProperty("revise_status", "Pending Approval for Manager");
         } else if(isRevised.equalsIgnoreCase("No") && buttonAction.equalsIgnoreCase("Submit")) {
             row.setProperty("status", "Pending Approval for TL");
         }
