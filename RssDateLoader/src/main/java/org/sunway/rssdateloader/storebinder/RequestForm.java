@@ -66,14 +66,15 @@ public class RequestForm implements QueryHandlerInterface {
                 row.setProperty("f_ext_wd", rev_ext_wd);
                 row.setProperty("f_ext_date", rev_ext_date);
 
-                row.setProperty("revise_status", "Pending Approval for Manager");
+                row.setProperty("revise_status", "Pending Approval");
+                row.setProperty("status", "Draft");
             }else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
             }
 
         } else if (isRevised.equalsIgnoreCase("No") && buttonAction.equalsIgnoreCase("Submit")) {
-            row.setProperty("status", "Pending Approval for TL");
+            row.setProperty("status", "Completed");
         }
 
     }
