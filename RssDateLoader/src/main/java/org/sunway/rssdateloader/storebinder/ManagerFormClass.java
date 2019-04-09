@@ -44,6 +44,8 @@ public class ManagerFormClass implements QueryHandlerInterface{
             userAction = "Rejected";
         }
         
+        
+        row.setProperty("is_revised", "No");
         row.setProperty("revise_status", userAction);  
         qh.updateHistoryLog(uId, id, current_manager, userAction+" KPI revision request", manager_remarks);
 
