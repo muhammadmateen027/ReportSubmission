@@ -57,49 +57,21 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
                 form.performAction(id);
-            }//check for manager action
+            }//check for Manager action
             else if (formId.equalsIgnoreCase("managerViewForm")) {
-                ManagerFormClass managerFormClass = new ManagerFormClass(rowSet);
-                managerFormClass.formAction();
-            }//check for BUFinance Approval
-//            else if (formId.equalsIgnoreCase("tlViewForm")) {
-//                FormRow row = rowSet.get(0);
-//                String tlAction = row.getProperty("actionButton");
-//                if (tlAction.equalsIgnoreCase("Approved")) {
-//                    row.setProperty("status", "Pending Approval for BuFinance");
-//                } else if (tlAction.equalsIgnoreCase("Reject")) {
-//                    row.setProperty("status", "TeamLeader Rejected");
-//                }
-//
-//            }//Check for the final form status
-//            else if (formId.equalsIgnoreCase("buFinanceViewForm")) {
-//                FormRow row = rowSet.get(0);
-//                String buFinanceAction = row.getProperty("actionButton");
-//                if (buFinanceAction.equalsIgnoreCase("Approved")) {
-//                    row.setProperty("status", "Form Approved");
-//                } else if (buFinanceAction.equalsIgnoreCase("Reject")) {
-//                    row.setProperty("status", "BUFinance Rejected");
-//                }
-//
-//            } else if (formId.equalsIgnoreCase("user_change_form")) {
-//                FormRow row = rowSet.get(0);
-//                String isRevised = row.getProperty("is_revised");
-//                String buttonAction = row.getProperty("button_box");
-//                if (isRevised.equalsIgnoreCase("Yes") && buttonAction.equalsIgnoreCase("Submit")) {
-//                    String rev_int_wd = row.getProperty("rev_internal_wd");
-//                    String rev_int_date = row.getProperty("rev_int_date");
-//                    String rev_ext_wd = row.getProperty("rev_external_wd");
-//                    String rev_ext_date = row.getProperty("rev_ext_date");
-//                    row.setProperty("f_int_wd", rev_int_wd);
-//                    row.setProperty("f_int_date", rev_int_date);
-//                    row.setProperty("f_ext_wd", rev_ext_wd);
-//                    row.setProperty("f_ext_date", rev_ext_date);
-//                    row.setProperty("status", "New");
-//                    row.setProperty("revise_status", "Pending Approval for Manager");
-//                } else if (isRevised.equalsIgnoreCase("No") && buttonAction.equalsIgnoreCase("Submit")) {
-//                    row.setProperty("status", "Pending Approval for TL");
-//                }
-//            }
+                FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                formStatusClass.managerFormAction();
+            }//check for TL action
+            else if (formId.equalsIgnoreCase("tl_view_form")) {
+                FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                formStatusClass.tlFormAction();
+            }
+           //Check for the final form status
+           else if (formId.equalsIgnoreCase("buFinanceViewForm")) {
+              FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                formStatusClass.BUFormAction();
+           }
+           
         }
         if (setSubmit) {
             fm = super.store(element, rowSet, formData);

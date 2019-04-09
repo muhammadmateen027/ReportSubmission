@@ -18,17 +18,17 @@ import org.sunway.rssdateloader.formdataloader.QueryHandlerInterface;
  * @pc omen
  * @author Mateen
  */
-public class ManagerFormClass implements QueryHandlerInterface{
+public class FormStatusClass implements QueryHandlerInterface{
 
     private FormRowSet rowSet;
     private QueryHandler qh;
 
-    public ManagerFormClass(FormRowSet rowSet) {
+    public FormStatusClass(FormRowSet rowSet) {
         this.rowSet = rowSet;
         this.qh = new QueryHandler(this);
     }
 
-    public void formAction() {
+    public void managerFormAction() {
 
         FormRow row = rowSet.get(0);
         String uId = UUID.randomUUID().toString();
@@ -48,6 +48,48 @@ public class ManagerFormClass implements QueryHandlerInterface{
         row.setProperty("is_revised", "No");
         row.setProperty("revise_status", userAction);  
         qh.updateHistoryLog(uId, id, current_manager, userAction+" KPI revision request", manager_remarks);
+
+    }
+    
+    public void tlFormAction() {
+        FormRow row = rowSet.get(0);
+        String uId = UUID.randomUUID().toString();
+        String tlAction = row.getProperty("actionButton");
+        String id = row.getProperty("id");
+        String current_tl = row.getProperty("current_tl");
+        String tl_remarks = row.getProperty("tl_remarks");
+        String userAction = "";
+        if (tlAction.equalsIgnoreCase("Approved")) {
+            userAction = "TLApproved";
+        } else if (tlAction.equalsIgnoreCase("Reject")) {
+            userAction = "TLRejected";
+        }
+        row.setProperty("is_revised", "No");
+        row.setProperty("status", userAction);  
+        qh.updateHistoryLog(uId, id, current_tl, userAction, tl_remarks);
+
+    }
+    
+    public void BUFormAction() {
+
+        FormRow row = rowSet.get(0);
+        String uId = UUID.randomUUID().toString();
+        String buAction = row.getProperty("actionButton");
+        String id = row.getProperty("id");
+        String current_bu = row.getProperty("current_bu");
+        String bu_remarks = row.getProperty("bu_remarks");
+        String userAction = "";
+        
+        if (buAction.equalsIgnoreCase("Approved")) {
+            userAction = "Closed";
+        } else if (buAction.equalsIgnoreCase("Reject")) {
+            userAction = "BURejected";
+        }
+        
+        
+        row.setProperty("is_revised", "No");
+        row.setProperty("status", userAction);  
+        qh.updateHistoryLog(uId, id, current_bu, userAction, bu_remarks);
 
     }
 
