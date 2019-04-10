@@ -59,14 +59,17 @@ public class FormStatusClass implements QueryHandlerInterface{
         String current_tl = row.getProperty("current_tl");
         String tl_remarks = row.getProperty("tl_remarks");
         String userAction = "";
+        String historyStatus="";
         if (tlAction.equalsIgnoreCase("Approved")) {
             userAction = "TLApproved";
+            historyStatus="Request approved by TL and is pending by BU Finanac's approval";
         } else if (tlAction.equalsIgnoreCase("Reject")) {
             userAction = "TLRejected";
+            historyStatus="Request rejected by TL and is pending for completion";
         }
         row.setProperty("is_revised", "No");
         row.setProperty("status", userAction);  
-        qh.updateHistoryLog(uId, id, current_tl, userAction, tl_remarks);
+        qh.updateHistoryLog(uId, id, current_tl, historyStatus, tl_remarks);
 
     }
     
@@ -79,17 +82,19 @@ public class FormStatusClass implements QueryHandlerInterface{
         String current_bu = row.getProperty("current_bu");
         String bu_remarks = row.getProperty("bu_remarks");
         String userAction = "";
-        
+        String historyStatus="";
         if (buAction.equalsIgnoreCase("Approved")) {
             userAction = "Closed";
+            row.setProperty("is_revised", "yes");
+            historyStatus="Request approved by BU Finanace and is fully closed";
         } else if (buAction.equalsIgnoreCase("Reject")) {
             userAction = "BURejected";
+            row.setProperty("is_revised", "No");
+            historyStatus="Request rejected by BU and is pending for completion";
         }
         
-        
-        row.setProperty("is_revised", "No");
         row.setProperty("status", userAction);  
-        qh.updateHistoryLog(uId, id, current_bu, userAction, bu_remarks);
+        qh.updateHistoryLog(uId, id, current_bu, historyStatus, bu_remarks);
 
     }
 
