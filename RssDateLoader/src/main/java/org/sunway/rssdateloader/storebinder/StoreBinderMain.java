@@ -57,7 +57,12 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
                 form.performAction(id);
-            }//check for Manager action
+            }
+            else if (formId.equalsIgnoreCase("user_submit_form")) {
+              String id = FormUtil.getElementParameterName(element);
+                RequestForm form = new RequestForm(formData, rowSet, this);
+                form.SubmitToTL(id);
+           }//check for Manager action
             else if (formId.equalsIgnoreCase("managerViewForm")) {
                 FormStatusClass formStatusClass = new FormStatusClass(rowSet);
                 formStatusClass.managerFormAction();
@@ -71,7 +76,7 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
               FormStatusClass formStatusClass = new FormStatusClass(rowSet);
                 formStatusClass.BUFormAction();
            }
-           
+                       
         }
         if (setSubmit) {
             fm = super.store(element, rowSet, formData);

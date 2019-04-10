@@ -77,6 +77,16 @@ public class RequestForm implements QueryHandlerInterface {
         }
 
     }
+    public void SubmitToTL(String elemId){
+        FormRow row = rowSet.get(0);
+        String buttonAction = row.getProperty("button_box");
+        if(buttonAction.equalsIgnoreCase("Submit"))
+        {
+           row.setProperty("is_revised", "No");
+           row.setProperty("status", "Completed"); 
+        }
+
+    }
 
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
