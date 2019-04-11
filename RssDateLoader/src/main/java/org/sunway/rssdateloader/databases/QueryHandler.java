@@ -141,7 +141,7 @@ public class QueryHandler {
 
     public void getManagerData(String comp, String sub) {
         Utils.showMsg("query start");
-        String query = "Select distinct c_manager_id, c_manager_id, c_manager_names, c_teamLead,c_buFinance from app_fd_rss_kpiProfileSetup Where c_cmpy = ? AND c_sub = ? ";
+        String query = "Select distinct c_manager_id, c_manager_id, c_manager_name from app_fd_rss_kpiProfileSetup Where c_company_id = ? AND c_sub_id = ? ";
         Connection con = getDatabaseConnection();
 
         try {

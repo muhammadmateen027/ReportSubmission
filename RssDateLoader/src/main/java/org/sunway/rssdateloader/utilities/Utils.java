@@ -43,18 +43,18 @@ public class Utils {
         String[] dateArray = date.split("-");
         String month = dateArray[1];
         
-        if(month.equalsIgnoreCase("01")) columnId = "c_january";
-        else if(month.equalsIgnoreCase("02")) columnId = "c_february";
-        else if(month.equalsIgnoreCase("03")) columnId = "c_march";
-        else if(month.equalsIgnoreCase("04")) columnId = "c_april";
-        else if(month.equalsIgnoreCase("05")) columnId = "c_may";
-        else if(month.equalsIgnoreCase("06")) columnId = "c_june";
-        else if(month.equalsIgnoreCase("07")) columnId = "c_july";
-        else if(month.equalsIgnoreCase("08")) columnId = "c_august";
-        else if(month.equalsIgnoreCase("09")) columnId = "c_september";
-        else if(month.equalsIgnoreCase("10")) columnId = "c_october";
-        else if(month.equalsIgnoreCase("11")) columnId = "c_november";
-        else if(month.equalsIgnoreCase("11")) columnId = "c_december";
+        if(month.equalsIgnoreCase("01")) columnId = "c_Jan";
+        else if(month.equalsIgnoreCase("02")) columnId = "c_Feb";
+        else if(month.equalsIgnoreCase("03")) columnId = "c_Mar";
+        else if(month.equalsIgnoreCase("04")) columnId = "c_Apr";
+        else if(month.equalsIgnoreCase("05")) columnId = "c_May";
+        else if(month.equalsIgnoreCase("06")) columnId = "c_Jun";
+        else if(month.equalsIgnoreCase("07")) columnId = "c_Jul";
+        else if(month.equalsIgnoreCase("08")) columnId = "c_Aug";
+        else if(month.equalsIgnoreCase("09")) columnId = "c_Sep";
+        else if(month.equalsIgnoreCase("10")) columnId = "c_Oct";
+        else if(month.equalsIgnoreCase("11")) columnId = "c_Nov";
+        else if(month.equalsIgnoreCase("11")) columnId = "c_Dec";
 
         return columnId;
     }

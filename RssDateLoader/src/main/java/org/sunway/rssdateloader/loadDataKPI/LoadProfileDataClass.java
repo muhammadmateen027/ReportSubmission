@@ -39,8 +39,8 @@ public class LoadProfileDataClass extends Element implements PluginWebSupport, Q
     QueryHandler qh = null;
     List<String> mgrIdList=null;
     List<String> mgrNameList=null;
-    List<String> tlList=null;
-    List<String> buFinanceList=null;
+//    List<String> tlList=null;
+//    List<String> buFinanceList=null;
 
     PrintWriter out;
     String company;
@@ -100,22 +100,22 @@ public class LoadProfileDataClass extends Element implements PluginWebSupport, Q
         JSONObject jSONObject = new JSONObject();
         mgrIdList = new ArrayList<String>();
         mgrNameList=new ArrayList<String>();
-        tlList=new ArrayList<String>();
-        buFinanceList=new ArrayList<String>();
+//        tlList=new ArrayList<String>();
+//        buFinanceList=new ArrayList<String>();
          try {
               while (rSet.next()) {
                 Utils.showMsg("Before getting object");
                 mgrIdList.add(rSet.getString("c_manager_id"));
                 Utils.showMsg("mgrList : "+mgrIdList);
-                mgrNameList.add(rSet.getString("c_manager_names"));
+                mgrNameList.add(rSet.getString("c_manager_name"));
                 Utils.showMsg("mgrNameList : "+mgrNameList);
-                tlList.add(rSet.getString("c_teamLead"));
-                buFinanceList.add(rSet.getString("c_buFinance"));
+//                tlList.add(rSet.getString("c_teamLead"));
+//                buFinanceList.add(rSet.getString("c_buFinance"));
             }
                 jSONObject.put(Utils.managerId, mgrIdList);
                 jSONObject.put(Utils.managerName, mgrNameList);
-                jSONObject.put(Utils.teamLead, tlList);
-                jSONObject.put(Utils.buFinance, buFinanceList);
+//                jSONObject.put(Utils.teamLead, tlList);
+//                jSONObject.put(Utils.buFinance, buFinanceList);
 
                 jSONArray.put(jSONObject);
         } catch (SQLException ex) {
