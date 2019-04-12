@@ -31,8 +31,8 @@ public class Utils {
     public static final String managerId = "ManagerId";
     public static final String managerName = "ManagerName";
 
-    public static final String teamLead = "TeamLead";
-    public static final String buFinance = "BUFinance";
+    public static final String picId = "PICId";
+    public static final String picName = "PICName";
 
 //-->ends
 

@@ -95,7 +95,7 @@ public class QueryHandler {
 
     public JSONArray getKPIData(String comp, String sub, String year, String wdMonth) throws JSONException {
         JSONArray jArr = new JSONArray();
-        String query = "Select distinct id, c_environment_id, c_f_manager_name, c_f_manager_id, c_kpi_target, " + wdMonth
+        String query = "Select distinct id, c_environment_id, c_f_manager_name, c_f_manager_id, c_f_pic_name, c_f_pic_id, c_kpi_target, " + wdMonth
                 + " from app_fd_rss_cmp_kpi_profile WHERE c_company_id = ? AND c_subject_id = ? AND c_year_id = ? ";
         Connection con = getDatabaseConnection();
 
@@ -141,7 +141,7 @@ public class QueryHandler {
 
     public void getManagerData(String comp, String sub) {
         Utils.showMsg("query start");
-        String query = "Select distinct c_manager_id, c_manager_id, c_manager_name from app_fd_rss_kpiProfileSetup Where c_company_id = ? AND c_sub_id = ? ";
+        String query = "Select distinct c_manager_id, c_manager_id, c_manager_name, c_pic_id, c_pic_name from app_fd_rss_kpiProfileSetup Where c_company_id = ? AND c_sub_id = ? ";
         Connection con = getDatabaseConnection();
 
         try {
