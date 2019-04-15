@@ -42,6 +42,7 @@ public class RequestForm implements QueryHandlerInterface {
         String rev_remarks = row.getProperty("rev_remarks");
 
         String revise_status = row.getProperty("revise_status");
+        String status=row.getProperty("status");
         String buttonAction = row.getProperty("button_box");
 
         Utils.showMsg("external_date: " + external_date);
@@ -65,7 +66,7 @@ public class RequestForm implements QueryHandlerInterface {
 
                 row.setProperty("f_ext_wd", rev_ext_wd);
                 row.setProperty("f_ext_date", rev_ext_date);
-
+                if(status.equalsIgnoreCase("New"))
                 row.setProperty("status", "Draft");
             }else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
