@@ -74,20 +74,25 @@ public class RequestForm implements QueryHandlerInterface {
 
         } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
             row.setProperty("status", "Completed");
-        }
+        }//Save draft changes
+        else if (buttonAction.equalsIgnoreCase("Save As Draft")) {
+            row.setProperty("status", "New");
+        }else if (buttonAction.equalsIgnoreCase("Discard")) {
+            row.setProperty("status", "Closed");
+            row.setProperty("is_revised", "yes");
+        }//ends
 
     }
-    public void SubmitToTL(String elemId){
-        FormRow row = rowSet.get(0);
-        String buttonAction = row.getProperty("button_box");
-        if(buttonAction.equalsIgnoreCase("Submit"))
-        {
-           row.setProperty("is_revised", "No");
-           row.setProperty("status", "Completed"); 
-        }
-
-    }
-
+//    public void SubmitToTL(String elemId){
+//        FormRow row = rowSet.get(0);
+//        String buttonAction = row.getProperty("button_box");
+//        if(buttonAction.equalsIgnoreCase("Submit"))
+//        {
+//           row.setProperty("is_revised", "No");
+//           row.setProperty("status", "Completed"); 
+//        }
+//
+//    }
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
