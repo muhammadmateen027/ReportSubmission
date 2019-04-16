@@ -14,4 +14,6 @@ package org.sunway.rssdateloader.storebinder;
 public interface OnCallBack {
     public void onSuccess();
     public void onFailure();
+    
+    public void sendEmail(String status);
 }

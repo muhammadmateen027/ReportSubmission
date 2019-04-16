@@ -85,13 +85,18 @@
             <scope>provided</scope>
         </dependency>
         <!-- Change plugin specific dependencies here -->
-        <dependency>
+<!--        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>
             <type>jar</type>
+        </dependency>-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <type>jar</type>
         </dependency>
-        
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>

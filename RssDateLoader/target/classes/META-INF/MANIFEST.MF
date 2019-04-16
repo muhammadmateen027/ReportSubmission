@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1555317498240
-Build-Jdk: 1.8.0_201
-Built-By: kirthikan
+Bnd-LastModified: 1555386554621
+Build-Jdk: 1.8.0_162
+Built-By: omen
 Bundle-Activator: org.sunway.rssdateloader.Activator
-Bundle-ClassPath: .,dependency/servlet-api-2.4.jar,dependency/poi-3.12.j
+Bundle-ClassPath: .,dependency/servlet-api-2.5.jar,dependency/poi-3.12.j
  ar,dependency/commons-codec-1.9.jar,dependency/poi-ooxml-3.12.jar,depen
  dency/poi-ooxml-schemas-3.12.jar,dependency/xmlbeans-2.6.0.jar,dependen
  cy/commons-io-2.4.jar
@@ -17,8 +17,8 @@ Embed-Dependency: *;scope=compile|runtime;inline=false
 Embed-Directory: dependency
 Embed-StripGroup: true
 Embed-Transitive: true
-Embedded-Artifacts: dependency/servlet-api-2.4.jar;g="javax.servlet";a="
- servlet-api";v="2.4",dependency/poi-3.12.jar;g="org.apache.poi";a="poi"
+Embedded-Artifacts: dependency/servlet-api-2.5.jar;g="javax.servlet";a="
+ servlet-api";v="2.5",dependency/poi-3.12.jar;g="org.apache.poi";a="poi"
  ;v="3.12",dependency/commons-codec-1.9.jar;g="commons-codec";a="commons
  -codec";v="1.9",dependency/poi-ooxml-3.12.jar;g="org.apache.poi";a="poi
  -ooxml";v="3.12",dependency/poi-ooxml-schemas-3.12.jar;g="org.apache.po
@@ -41,4 +41,4 @@ Import-Package: org.joget.report.dao,org.joget.report.model,org.joget.re
  userview.service,org.joget.apps.workflow.lib,javax.servlet,javax.servle
  t.http,org.osgi.framework;version="1.3.0"
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
-Tool: Bnd-4.1.0.201810181252
+Tool: Bnd-3.5.0.201709291849

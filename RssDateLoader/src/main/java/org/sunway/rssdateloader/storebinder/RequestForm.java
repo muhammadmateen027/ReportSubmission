@@ -67,7 +67,8 @@ public class RequestForm implements QueryHandlerInterface {
                 row.setProperty("f_ext_wd", rev_ext_wd);
                 row.setProperty("f_ext_date", rev_ext_date);
                 if(status.equalsIgnoreCase("New"))
-                row.setProperty("status", "Draft");
+                    row.setProperty("status", "Draft");
+                onCallBack.sendEmail("Draft");
             }else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
@@ -75,6 +76,7 @@ public class RequestForm implements QueryHandlerInterface {
 
         } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
             row.setProperty("status", "Completed");
+            onCallBack.sendEmail("Completed");
         }//Save draft changes
         else if (buttonAction.equalsIgnoreCase("Save As Draft")) {
             row.setProperty("status", "New");

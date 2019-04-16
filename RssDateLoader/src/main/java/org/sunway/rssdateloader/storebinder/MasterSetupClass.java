@@ -81,4 +81,8 @@ public class MasterSetupClass extends WorkflowFormBinder implements OnCallBack {
         callSuper = false;
         Utils.showMsg("onFailure After");
     }
+
+    public void sendEmail(String status) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.sunway.rssdateloader.utilities;
 
 import java.text.ParseException;
@@ -11,8 +10,18 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import org.joget.commons.util.LogUtil;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.app.dao.EnvironmentVariableDao;
+import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.EnvironmentVariable;
+import org.joget.apps.app.service.AppService;
+import org.joget.apps.app.service.AppUtil;
+import org.joget.commons.util.LogUtil;
+import java.util.Map;
+import org.joget.apps.app.dao.PluginDefaultPropertiesDao;
+import org.joget.apps.app.lib.EmailTool;
+import org.joget.apps.app.model.PluginDefaultProperties;
+import org.joget.plugin.property.service.PropertyUtil;
 
 /**
  *
@@ -20,6 +29,7 @@ import org.joget.apps.form.model.FormData;
  * @author Mateen
  */
 public class Utils {
+
     public static final String internalDate = "InternalDate";
     public static final String internalWD = "InternalWD";
     public static final String externalDate = "ExternalDate";
@@ -35,41 +45,51 @@ public class Utils {
     public static final String picName = "PICName";
 
 //-->ends
-
-
-    
     public static String getMonthIdFromDate(String date) {
         String columnId = "";
         String[] dateArray = date.split("-");
         String month = dateArray[1];
-        
-        if(month.equalsIgnoreCase("01")) columnId = "c_Jan";
-        else if(month.equalsIgnoreCase("02")) columnId = "c_Feb";
-        else if(month.equalsIgnoreCase("03")) columnId = "c_Mar";
-        else if(month.equalsIgnoreCase("04")) columnId = "c_Apr";
-        else if(month.equalsIgnoreCase("05")) columnId = "c_May";
-        else if(month.equalsIgnoreCase("06")) columnId = "c_Jun";
-        else if(month.equalsIgnoreCase("07")) columnId = "c_Jul";
-        else if(month.equalsIgnoreCase("08")) columnId = "c_Aug";
-        else if(month.equalsIgnoreCase("09")) columnId = "c_Sep";
-        else if(month.equalsIgnoreCase("10")) columnId = "c_Oct";
-        else if(month.equalsIgnoreCase("11")) columnId = "c_Nov";
-        else if(month.equalsIgnoreCase("11")) columnId = "c_Dec";
+
+        if (month.equalsIgnoreCase("01")) {
+            columnId = "c_Jan";
+        } else if (month.equalsIgnoreCase("02")) {
+            columnId = "c_Feb";
+        } else if (month.equalsIgnoreCase("03")) {
+            columnId = "c_Mar";
+        } else if (month.equalsIgnoreCase("04")) {
+            columnId = "c_Apr";
+        } else if (month.equalsIgnoreCase("05")) {
+            columnId = "c_May";
+        } else if (month.equalsIgnoreCase("06")) {
+            columnId = "c_Jun";
+        } else if (month.equalsIgnoreCase("07")) {
+            columnId = "c_Jul";
+        } else if (month.equalsIgnoreCase("08")) {
+            columnId = "c_Aug";
+        } else if (month.equalsIgnoreCase("09")) {
+            columnId = "c_Sep";
+        } else if (month.equalsIgnoreCase("10")) {
+            columnId = "c_Oct";
+        } else if (month.equalsIgnoreCase("11")) {
+            columnId = "c_Nov";
+        } else if (month.equalsIgnoreCase("11")) {
+            columnId = "c_Dec";
+        }
 
         return columnId;
     }
-    
+
     public static void showError(FormData mData, String elementId, String st) {
         mData.addFormError(elementId, st);
     }
-    
+
     public static String getDateFromWD(String date, int noOfDays, List<String> holidays) {
 //        System.out.println("Date before Addition: " + date);
         // Specifying date format that matches the given date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         try {
-        // Setting the date to the given date
+            // Setting the date to the given date
             c.setTime(sdf.parse(date));
 
         } catch (ParseException e) {
@@ -87,7 +107,7 @@ public class Utils {
                 c.add(Calendar.DATE, 1);
             }
 
-                //holiday check
+            //holiday check
             for (int j = 1; j <= holidays.size(); j++) {
                 String dummyDate = sdf.format(c.getTime());
                 if (Arrays.asList(holidays).contains(dummyDate)) {
@@ -104,20 +124,77 @@ public class Utils {
 
         return convetedDate;
     }
-    
-    public static String arrangedDate (String args) {
+
+    public static String arrangedDate(String args) {
         String[] dateArray = {};
         String arrangedStr = "";
-                if(args.contains("-")) {
+        if (args.contains("-")) {
             dateArray = args.split("-");
-            arrangedStr = dateArray[2] + "-"+dateArray[1] + "-"+dateArray[0];
-        } else if(args.contains("/")) {
+            arrangedStr = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
+        } else if (args.contains("/")) {
             dateArray = args.split("/");
-            arrangedStr = dateArray[2] + "-"+dateArray[1] + "-"+dateArray[0];   
-        } 
-        
+            arrangedStr = dateArray[2] + "-" + dateArray[1] + "-" + dateArray[0];
+        }
+
         return arrangedStr;
     }
+
+    public static void composeEmail(String from, String toEmail, String ccEmail, String subject, String message) {
+        if (from.equalsIgnoreCase("")) {
+            from = "SysAdmin@sunway.com.my";
+        }
+        EmailTool et = new EmailTool();
+        PluginDefaultPropertiesDao dao = (PluginDefaultPropertiesDao) AppUtil.getApplicationContext().getBean("pluginDefaultPropertiesDao");
+        PluginDefaultProperties pluginDefaultProperties = dao.loadById("org.joget.apps.app.lib.EmailTool", AppUtil.getCurrentAppDefinition());
+        Map properties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultProperties.getPluginProperties());
+        properties.put("toSpecific", toEmail);
+        properties.put("from", from);
+        properties.put("cc", ccEmail);
+        properties.put("subject", subject);
+        properties.put("message", message);
+        properties.put("bcc", "appsupport@sunway.com.my;mateen@opendynamics.com.my");
+        et.execute(properties);
+
+    }
+
+    public static String emailFooter() {
+        return "\n\nThank you.\n\n"
+                + "This is an auto-generated email. Please do not reply to this message.\n\n"
+                + "Need help?\n\n"
+                + "You may call Sunway Shared Services Service Desk at :\n"
+                + "603-5639 9390 or 603-5639 9373\n"
+                + "Mon - Fri 9am to 6pm (GMT+08)\n";
+    }
+
+    public static String getlink(String server, String linkDes, String recId, String refNo) {
+        Utils.showMsg("Server: "+server);
+        if (linkDes.equalsIgnoreCase("")) linkDes = "pending_tasks";
+        
+        linkDes = linkDes + "?_mode=edit&id="+recId;
+        
+        String link = server+"/jw/web/userview/fssrss/rss_home_page/_/"+linkDes;        
+        return "<a href="+link+ " target=_blank> "+refNo+" </a>";
+    }
+    
+    public static String getEnvVar(String appId, String envVar) {
+        String result = "";
+
+        try {
+            AppService appService = (AppService) AppUtil.getApplicationContext().getBean("appService");
+            AppDefinition appDef = appService.getAppDefinition(appId, "");
+            EnvironmentVariableDao environmentVariableDao = (EnvironmentVariableDao) 
+                    AppUtil.getApplicationContext().getBean("environmentVariableDao");
+            EnvironmentVariable evVar = environmentVariableDao.loadById(envVar, appDef);
+            result = evVar.getValue();
+        } catch (Exception e) {
+            System.out.println("getEnvVar error>" + e.getMessage());
+
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+    
     
     public static void showMsg(String st) {
         LogUtil.info("Debugging QH" + "===> ", st);

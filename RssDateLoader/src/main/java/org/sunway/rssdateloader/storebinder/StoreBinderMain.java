@@ -13,6 +13,7 @@ import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormUtil;
 import org.sunway.rssdateloader.databases.QueryHandler;
+import org.sunway.rssdateloader.emailcomposers.EmailClass;
 import org.sunway.rssdateloader.utilities.Utils;
 
 /**
@@ -22,8 +23,10 @@ import org.sunway.rssdateloader.utilities.Utils;
 public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
 
     final String pliuginName = "RSS - CustomStoreBinder";
-    private boolean setSubmit = true;
-
+    private boolean setSubmit;
+    private String stat = "";
+    private String formId = "";
+    
     public String getName() {
         return pliuginName;
     }
@@ -51,18 +54,15 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
     @Override
     public FormRowSet store(Element element, FormRowSet rowSet, FormData formData) {
         FormRowSet fm = null;
+        setSubmit = true;
+        
         if (rowSet != null && !rowSet.isEmpty()) {
-            String formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
+            this.formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
             if (formId.equalsIgnoreCase("revise_target_form") || formId.equalsIgnoreCase("user_update_form")||formId.equalsIgnoreCase("draftForm")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
                 form.performAction(id);
             }
-//            else if (formId.equalsIgnoreCase("user_submit_form")) {
-//              String id = FormUtil.getElementParameterName(element);
-//                RequestForm form = new RequestForm(formData, rowSet, this);
-//                form.SubmitToTL(id);
-//           }//check for Manager action
             else if (formId.equalsIgnoreCase("managerViewForm")) {
                 FormStatusClass formStatusClass = new FormStatusClass(rowSet);
                 formStatusClass.managerFormAction();
@@ -79,16 +79,31 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                        
         }
         if (setSubmit) {
+            Utils.showMsg("SetSubmit = true");
             fm = super.store(element, rowSet, formData);
         }
+        
+        EmailClass emc = new EmailClass(formData, rowSet);
+        if (!stat.equalsIgnoreCase("") && (formId.equalsIgnoreCase("revise_target_form") ||formId.equalsIgnoreCase("draftForm"))) {
+            Utils.showMsg("After form submission status: "+ stat);
+            emc.mainReqEmailComposer(stat);
+        } else if (formId.equalsIgnoreCase("user_update_form")) {
+            
+        }
+        Utils.showMsg("SetSubmit = False");
         return fm;
     }
 
     public void onSuccess() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void onFailure() {
-        setSubmit = false;
+        
+        Utils.showMsg("In Failure Section");
+        this.setSubmit = false;
+    }
+
+    public void sendEmail(String status) {
+        this.stat = status;
     }
 }

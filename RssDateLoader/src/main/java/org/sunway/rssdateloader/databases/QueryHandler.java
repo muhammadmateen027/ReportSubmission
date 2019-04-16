@@ -162,4 +162,46 @@ public class QueryHandler {
             }
         }
     }
+    
+    public String getUserEmail(String username) {
+        String userEmail = "";
+        String query = "select email from dir_user where username = ?";
+        Connection con = getDatabaseConnection();
+        try {
+            PreparedStatement stmt2 = con.prepareStatement(query);
+            stmt2.setString(1, username);
+            ResultSet rSet = stmt2.executeQuery();
+            while (rSet.next()) {
+                userEmail = rSet.getString("email");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return userEmail;
+    }
+    
+    public String getUniqueId(String refNo) {
+        String id = "";
+        String query = "select distinct id from app_fd_rss_request_detail where c_refNo =  ?";
+        Connection con = getDatabaseConnection();
+        try {
+            PreparedStatement stmt2 = con.prepareStatement(query);
+            stmt2.setString(1, refNo);
+            ResultSet rSet = stmt2.executeQuery();
+            while (rSet.next()) {
+                id = rSet.getString("id");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return id;
+    }
 }
