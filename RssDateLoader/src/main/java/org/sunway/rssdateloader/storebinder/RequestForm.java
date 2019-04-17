@@ -42,7 +42,7 @@ public class RequestForm implements QueryHandlerInterface {
         String rev_remarks = row.getProperty("rev_remarks");
 
         String revise_status = row.getProperty("revise_status");
-        String status=row.getProperty("status");
+        String status = row.getProperty("status");
         String buttonAction = row.getProperty("button_box");
 
         Utils.showMsg("external_date: " + external_date);
@@ -66,25 +66,20 @@ public class RequestForm implements QueryHandlerInterface {
 
                 row.setProperty("f_ext_wd", rev_ext_wd);
                 row.setProperty("f_ext_date", rev_ext_date);
-                if(status.equalsIgnoreCase("New"))
+                if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
+                }
                 onCallBack.sendEmail("Draft");
-            }else {
+            } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
             }
 
         } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
+            Utils.showMsg("===>>  Pending Approval");
             row.setProperty("status", "Completed");
             onCallBack.sendEmail("Completed");
-        }//Save draft changes
-        else if (buttonAction.equalsIgnoreCase("Save As Draft")) {
-            row.setProperty("status", "New");
-        }else if (buttonAction.equalsIgnoreCase("Discard")) {
-            row.setProperty("status", "Closed");
-            row.setProperty("is_revised", "yes");
-        }//ends
-
+        }
     }
 //    public void SubmitToTL(String elemId){
 //        FormRow row = rowSet.get(0);
@@ -96,6 +91,167 @@ public class RequestForm implements QueryHandlerInterface {
 //        }
 //
 //    }
+
+    public void updateFormAction(String elemId) {
+        FormRow row = rowSet.get(0);
+        String internal_wd = row.getProperty("int_wd");
+        String internal_date = row.getProperty("int_date");
+        String external_wd = row.getProperty("ext_wd");
+        String external_date = row.getProperty("ext_date");
+
+        String rev_remarks = row.getProperty("rev_remarks");
+
+        String revise_status = row.getProperty("revise_status");
+        String status = row.getProperty("status");
+        String buttonAction = row.getProperty("button_box");
+        String is_revised = row.getProperty("is_revised");
+
+        Utils.showMsg("external_date: " + external_date);
+
+        row.setProperty("f_int_wd", internal_wd);
+        row.setProperty("f_int_date", internal_date);
+
+        row.setProperty("f_ext_wd", external_wd);
+        row.setProperty("f_ext_date", external_date);
+        
+        Utils.showMsg("=> Revised Status: "+revise_status + " ; isRevised: "+is_revised + " ; status: "+status);
+
+        if (buttonAction.equalsIgnoreCase("Resubmit")&& is_revised.equalsIgnoreCase("No")&& status.equalsIgnoreCase("TLRejected")) {
+            if(!(revise_status.equalsIgnoreCase("Approved")||revise_status.equalsIgnoreCase("Rejected"))){
+            if (!rev_remarks.equalsIgnoreCase("")) {
+                String rev_int_wd = row.getProperty("rev_internal_wd");
+                String rev_int_date = row.getProperty("rev_int_date");
+                String rev_ext_wd = row.getProperty("rev_external_wd");
+                String rev_ext_date = row.getProperty("rev_ext_date");
+
+                row.setProperty("f_int_wd", rev_int_wd);
+                row.setProperty("f_int_date", rev_int_date);
+
+                row.setProperty("f_ext_wd", rev_ext_wd);
+                row.setProperty("f_ext_date", rev_ext_date);
+
+                row.setProperty("is_revised", "Yes");
+                row.setProperty("revise_status", "Pending approval");
+                if (status.equalsIgnoreCase("New")) {
+                    row.setProperty("status", "Draft");
+                }
+
+                onCallBack.sendEmail("Draft");
+            } else {
+                Utils.showError(formData, elemId, "Revision remarks is compulsory.");
+                onCallBack.onFailure();
+            }
+
+            Utils.showMsg("===>>  1");
+        }
+        }         
+        
+        else if (buttonAction.equalsIgnoreCase("Resubmit")&& is_revised.equalsIgnoreCase("No")&& status.equalsIgnoreCase("TLRejected")) {
+            if(revise_status.equalsIgnoreCase("Approved") || revise_status.equalsIgnoreCase("Rejected")){
+            Utils.showMsg("===>>  2");
+            row.setProperty("status", "Completed");
+            onCallBack.sendEmail("Completed");
+            }
+        } 
+        
+        else if (buttonAction.equalsIgnoreCase("Resubmit")&& is_revised.equalsIgnoreCase("Yes") && status.equalsIgnoreCase("TLRejected")) {
+            if(revise_status.equalsIgnoreCase("Approved") || revise_status.equalsIgnoreCase("Rejected")){
+            if (!rev_remarks.equalsIgnoreCase("")) {
+                String rev_int_wd = row.getProperty("rev_internal_wd");
+                String rev_int_date = row.getProperty("rev_int_date");
+                String rev_ext_wd = row.getProperty("rev_external_wd");
+                String rev_ext_date = row.getProperty("rev_ext_date");
+
+                row.setProperty("f_int_wd", rev_int_wd);
+                row.setProperty("f_int_date", rev_int_date);
+
+                row.setProperty("f_ext_wd", rev_ext_wd);
+                row.setProperty("f_ext_date", rev_ext_date);
+
+                row.setProperty("is_revised", "Yes");
+                row.setProperty("revise_status", "Pending approval");
+                if (status.equalsIgnoreCase("New")) {
+                    row.setProperty("status", "Draft");
+                }
+
+                onCallBack.sendEmail("Draft");
+            } else {
+                Utils.showError(formData, elemId, "Revision remarks is compulsory.");
+                onCallBack.onFailure();
+            }
+
+            Utils.showMsg("===>>  3");
+            }
+        }
+        
+        else if (status.equalsIgnoreCase("TLRejected") && buttonAction.equalsIgnoreCase("Resubmit")&& is_revised.equalsIgnoreCase("Yes")&& revise_status.equalsIgnoreCase("Pending approval")) {
+            Utils.showMsg("===>>  4");
+            row.setProperty("status", "Completed");
+            onCallBack.sendEmail("Completed");
+        } else {
+            Utils.showMsg("===>>  5");
+        }
+    }
+
+    public void updateManagerFormAction(String elemId) {
+        FormRow row = rowSet.get(0);
+        String internal_wd = row.getProperty("int_wd");
+        String internal_date = row.getProperty("int_date");
+        String external_wd = row.getProperty("ext_wd");
+        String external_date = row.getProperty("ext_date");
+
+        String rev_remarks = row.getProperty("rev_remarks");
+
+        String revise_status = row.getProperty("revise_status");
+        String status = row.getProperty("status");
+        String buttonAction = row.getProperty("button_box");
+        String is_revised = row.getProperty("is_revised");
+
+        Utils.showMsg("external_date: " + external_date);
+
+        row.setProperty("f_int_wd", internal_wd);
+        row.setProperty("f_int_date", internal_date);
+
+        row.setProperty("f_ext_wd", external_wd);
+        row.setProperty("f_ext_date", external_date);
+
+        if (buttonAction.equalsIgnoreCase("Resubmit")
+                && revise_status.equalsIgnoreCase("Pending Approval")) {
+
+            if (!rev_remarks.equalsIgnoreCase("")) {
+                String rev_int_wd = row.getProperty("rev_internal_wd");
+                String rev_int_date = row.getProperty("rev_int_date");
+                String rev_ext_wd = row.getProperty("rev_external_wd");
+                String rev_ext_date = row.getProperty("rev_ext_date");
+
+                row.setProperty("f_int_wd", rev_int_wd);
+                row.setProperty("f_int_date", rev_int_date);
+
+                row.setProperty("f_ext_wd", rev_ext_wd);
+                row.setProperty("f_ext_date", rev_ext_date);
+
+                if (status.equalsIgnoreCase("New")) {
+                    row.setProperty("status", "Draft");
+                }
+
+                onCallBack.sendEmail("Draft");
+            } else {
+                Utils.showError(formData, elemId, "Revision remarks is compulsory.");
+                onCallBack.onFailure();
+            }
+
+            Utils.showMsg("===>>  In If condition");
+        } else if (buttonAction.equalsIgnoreCase("Resubmit")
+                && !revise_status.equalsIgnoreCase("Pending Approval")) {
+            Utils.showMsg("===>>  In different Way");
+            row.setProperty("status", "Completed");
+            onCallBack.sendEmail("Completed");
+        } else {
+            Utils.showMsg("===>>  Else Triggered");
+            Utils.showMsg("status: " + status + " & Button: " + buttonAction);
+        }
+    }
+
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

@@ -51,6 +51,8 @@ public class FormStatusClass implements QueryHandlerInterface{
 
     }
     
+    
+    
     public void tlFormAction() {
         FormRow row = rowSet.get(0);
         String uId = UUID.randomUUID().toString();
@@ -67,7 +69,7 @@ public class FormStatusClass implements QueryHandlerInterface{
             userAction = "TLRejected";
             historyStatus="Request rejected by TL and is pending for completion";
         }
-        row.setProperty("is_revised", "No");
+        //row.setProperty("revise_status", "");
         row.setProperty("status", userAction);  
         qh.updateHistoryLog(uId, id, current_tl, historyStatus, tl_remarks);
 
