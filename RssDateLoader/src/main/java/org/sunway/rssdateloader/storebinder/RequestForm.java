@@ -81,7 +81,8 @@ public class RequestForm implements QueryHandlerInterface {
         } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
             Utils.showMsg("===>>  Pending Approval");
             row.setProperty("status", "Completed");
-            onCallBack.sendEmail("Completed");
+            if (formId.equalsIgnoreCase("revise_target_form"))
+                    onCallBack.sendEmailOnFirstForm("Completed", formId);
         }
     }
 //    public void SubmitToTL(String elemId){

@@ -82,15 +82,15 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 form.updateManagerFormAction(id);
 
             } else if (formId.equalsIgnoreCase("managerViewForm")) {
-                FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
                 formStatusClass.managerFormAction();
             }//check for TL action
             else if (formId.equalsIgnoreCase("tl_view_form")) {
-                FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
                 formStatusClass.tlFormAction();
             } //Check for the final form status
             else if (formId.equalsIgnoreCase("buFinanceViewForm")) {
-                FormStatusClass formStatusClass = new FormStatusClass(rowSet);
+                FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
                 formStatusClass.BUFormAction();
             }
 
