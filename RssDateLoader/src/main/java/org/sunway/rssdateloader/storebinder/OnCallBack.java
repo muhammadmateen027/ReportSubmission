@@ -16,4 +16,5 @@ public interface OnCallBack {
     public void onFailure();
     
     public void sendEmail(String status);
+    public void sendEmailOnFirstForm(String status, String formId);
 }

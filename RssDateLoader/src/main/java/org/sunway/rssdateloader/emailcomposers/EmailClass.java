@@ -6,6 +6,7 @@
 package org.sunway.rssdateloader.emailcomposers;
 
 import java.sql.ResultSet;
+import java.util.UUID;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
@@ -34,6 +35,7 @@ public class EmailClass implements QueryHandlerInterface {
     public void mainReqEmailComposer(String status) {
         Utils.showMsg("Inside Email Composer");
         FormRow row = rowSet.get(0);
+        String uId = UUID.randomUUID().toString();
         String team_leader = row.getProperty("team_leader");
         String manager_id = row.getProperty("manager_id");
         String closing_month = row.getProperty("closing_month");
@@ -41,8 +43,9 @@ public class EmailClass implements QueryHandlerInterface {
         String company = row.getProperty("company_id");
         String period_from = row.getProperty("period_from");
         String period_to = row.getProperty("period_to");
-        String userName = row.getProperty("c_user_name");
+        String userName = row.getProperty("user_name");
         String refNo = row.getProperty("refNo");
+        String remarks = row.getProperty("remarks");
 
         String id = qh.getUniqueId(refNo);
 //        String server = Utils.getEnvVar("fssrss", "rss_server");
@@ -50,6 +53,8 @@ public class EmailClass implements QueryHandlerInterface {
         String link = "";
 
         if (!id.equalsIgnoreCase("")) {
+            qh.updateHistoryLog(uId, id, userName, status, remarks);
+            
             Utils.showMsg("Id: "+ id);
             String emailSubject = "";
             String to = "";

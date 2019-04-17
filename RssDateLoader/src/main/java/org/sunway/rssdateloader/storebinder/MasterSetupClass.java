@@ -85,4 +85,9 @@ public class MasterSetupClass extends WorkflowFormBinder implements OnCallBack {
     public void sendEmail(String status) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void sendEmailOnFirstForm(String status, String formId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

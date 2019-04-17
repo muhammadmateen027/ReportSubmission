@@ -6,6 +6,7 @@
 package org.sunway.rssdateloader.storebinder;
 
 import java.sql.ResultSet;
+import java.util.UUID;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
@@ -32,8 +33,9 @@ public class RequestForm implements QueryHandlerInterface {
         this.onCallBack = aClass;
     }
 
-    public void performAction(String elemId) {
+    public void performAction(String elemId, String formId) {
         FormRow row = rowSet.get(0);
+        String uId = UUID.randomUUID().toString();
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
         String external_wd = row.getProperty("ext_wd");
@@ -69,7 +71,8 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-                onCallBack.sendEmail("Draft");
+                if (formId.equalsIgnoreCase("revise_target_form"))
+                    onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();

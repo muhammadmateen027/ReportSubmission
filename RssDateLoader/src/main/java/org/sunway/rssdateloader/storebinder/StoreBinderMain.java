@@ -26,6 +26,7 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
     private boolean setSubmit;
     private String stat = "";
     private String formId = "";
+    private String passingfmId = "";
 
     public String getName() {
         return pliuginName;
@@ -63,7 +64,7 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                     || formId.equalsIgnoreCase("user_submit_form")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
-                form.performAction(id);
+                form.performAction(id, formId);
             } else if (formId.equalsIgnoreCase("user_update_form")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
@@ -100,12 +101,19 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
         }
 
         EmailClass emc = new EmailClass(formData, rowSet);
-        if (!stat.equalsIgnoreCase("") && (formId.equalsIgnoreCase("revise_target_form")
-                || formId.equalsIgnoreCase("user_submit_form")
-                || formId.equalsIgnoreCase("draftForm"))) {
-            Utils.showMsg("After form submission status: " + stat);
+//        if (!stat.equalsIgnoreCase("") && 
+//                (formId.equalsIgnoreCase("revise_target_form")
+//                || formId.equalsIgnoreCase("user_submit_form")
+//                || formId.equalsIgnoreCase("draftForm"))) {
+//            Utils.showMsg("After form submission status: " + stat);
+//            emc.mainReqEmailComposer(stat);
+//        } 
+         if (!stat.equalsIgnoreCase("") && 
+                formId.equalsIgnoreCase("revise_target_form")) {
             emc.mainReqEmailComposer(stat);
-        } else if (formId.equalsIgnoreCase("user_update_form")) {
+            
+        }
+        else if (formId.equalsIgnoreCase("user_update_form")) {
 
         }
         Utils.showMsg("SetSubmit = False");
@@ -124,5 +132,11 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
     public void sendEmail(String status) {
         Utils.showMsg("send Email");
         this.stat = status;
+    }
+
+    @Override
+    public void sendEmailOnFirstForm(String status, String formId) {
+        this.stat = status;
+        this.passingfmId = formId;
     }
 }
