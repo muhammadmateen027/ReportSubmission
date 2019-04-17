@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1555480123144
+Bnd-LastModified: 1555483958159
 Build-Jdk: 1.8.0_162
 Built-By: omen
 Bundle-Activator: org.sunway.rssdateloader.Activator
@@ -40,5 +40,5 @@ Import-Package: org.joget.report.dao,org.joget.report.model,org.joget.re
  g.joget.apps.userview.lib,org.joget.apps.userview.model,org.joget.apps.
  userview.service,org.joget.apps.workflow.lib,javax.servlet,javax.servle
  t.http,org.osgi.framework;version="1.3.0"
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Tool: Bnd-3.5.0.201709291849
