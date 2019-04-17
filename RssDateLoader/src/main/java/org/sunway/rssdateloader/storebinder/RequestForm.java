@@ -118,7 +118,8 @@ public class RequestForm implements QueryHandlerInterface {
 
         if (buttonAction.equalsIgnoreCase("Resubmit")
                 && is_revised.equalsIgnoreCase("No")
-                && status.equalsIgnoreCase("TLRejected")) {
+                && (status.equalsIgnoreCase("TLRejected")
+                    || status.equalsIgnoreCase("BURejected"))) {
 
             if (!rev_remarks.equalsIgnoreCase("")) {
                 String rev_int_wd = row.getProperty("rev_internal_wd");
@@ -146,7 +147,11 @@ public class RequestForm implements QueryHandlerInterface {
 
             Utils.showMsg("===>>  1");
 
-        } else if (status.equalsIgnoreCase("TLRejected") && buttonAction.equalsIgnoreCase("Resubmit") && is_revised.equalsIgnoreCase("Yes") && revise_status.equalsIgnoreCase("Pending approval")) {
+        } else if ((status.equalsIgnoreCase("TLRejected")
+                    || status.equalsIgnoreCase("BURejected")) 
+                && buttonAction.equalsIgnoreCase("Resubmit") 
+                && is_revised.equalsIgnoreCase("Yes") 
+                && revise_status.equalsIgnoreCase("Pending approval")) {
             Utils.showMsg("===>>  4");
             row.setProperty("status", "Completed");
             onCallBack.sendEmail("Completed");
@@ -177,14 +182,15 @@ public class RequestForm implements QueryHandlerInterface {
         row.setProperty("f_ext_wd", external_wd);
         row.setProperty("f_ext_date", external_date);
 
-        Utils.showMsg("=> Revised Status: " + revise_status + " ; isRevised: " + is_revised + " ; status: " + 
-                status+ " ; raju: "+is_revised.equalsIgnoreCase("Yes"));
+        Utils.showMsg("=> Revised Status: " + revise_status + " ; isRevised: " + is_revised + " ; status: "
+                + status + " ; raju: " + is_revised.equalsIgnoreCase("Yes"));
 
         if (buttonAction.toString().equalsIgnoreCase("Resubmit")
                 && is_revised.toString().equalsIgnoreCase("Yes")
-                && status.toString().equalsIgnoreCase("TLRejected")
+                && (status.toString().equalsIgnoreCase("TLRejected")
+                || status.toString().equalsIgnoreCase("BURejected"))
                 && (!revise_status.toString().equalsIgnoreCase("Approved")
-                       || !revise_status.toString().equalsIgnoreCase("Rejected"))) {
+                || !revise_status.toString().equalsIgnoreCase("Rejected"))) {
 
             if (!rev_remarks.equalsIgnoreCase("")) {
                 String rev_int_wd = row.getProperty("rev_internal_wd");
@@ -210,18 +216,19 @@ public class RequestForm implements QueryHandlerInterface {
 
             Utils.showMsg("===>>  1");
 
-        } else if (status.equalsIgnoreCase("TLRejected") 
-                && buttonAction.equalsIgnoreCase("Resubmit") 
-                && is_revised.equalsIgnoreCase("No") 
+        } else if ((status.toString().equalsIgnoreCase("TLRejected")
+                || status.toString().equalsIgnoreCase("BURejected"))
+                && buttonAction.equalsIgnoreCase("Resubmit")
+                && is_revised.equalsIgnoreCase("No")
                 && (revise_status.toString().equalsIgnoreCase("Approved")
-                       || revise_status.toString().equalsIgnoreCase("Rejected"))) {
+                || revise_status.toString().equalsIgnoreCase("Rejected"))) {
             Utils.showMsg("===>>  4");
             row.setProperty("status", "Completed");
             onCallBack.sendEmail("Completed");
         } else {
             Utils.showMsg("===>>  5");
         }
-        
+
     }
 
     public void updateManagerFormAction(String elemId) {
