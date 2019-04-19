@@ -47,6 +47,10 @@ public class FormStatusClass implements QueryHandlerInterface {
             
         } else if (mgrAction.equalsIgnoreCase("Reject")) {
             userAction = "Rejected";
+            row.setProperty("rev_internal_wd", "");
+            row.setProperty("rev_external_wd", "");
+            row.setProperty("rev_int_date", "");
+            row.setProperty("rev_ext_date", "");            
         }
         row.setProperty("is_revised", "No");
         row.setProperty("revise_status", userAction);

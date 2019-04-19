@@ -35,7 +35,17 @@ public class RequestForm implements QueryHandlerInterface {
 
     public void performAction(String elemId, String formId) {
         FormRow row = rowSet.get(0);
-        String uId = UUID.randomUUID().toString();
+        String buttonAction = row.getProperty("button_box");
+        String status=row.getProperty("status");
+        if (buttonAction.equalsIgnoreCase("Submit")) {
+            Utils.showMsg("===>>  Submitted to TL");
+            if (status.equalsIgnoreCase("New"))
+            row.setProperty("status", "Completed");
+            onCallBack.sendEmailOnFirstForm("Completed", formId);
+        } 
+    }
+    public void reviseTargetAction(String elemId,String formId) {
+        FormRow row = rowSet.get(0);
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
         String external_wd = row.getProperty("ext_wd");
@@ -46,6 +56,7 @@ public class RequestForm implements QueryHandlerInterface {
         String revise_status = row.getProperty("revise_status");
         String status = row.getProperty("status");
         String buttonAction = row.getProperty("button_box");
+        String is_revised = row.getProperty("is_revised");
 
         Utils.showMsg("external_date: " + external_date);
 
@@ -55,7 +66,11 @@ public class RequestForm implements QueryHandlerInterface {
         row.setProperty("f_ext_wd", external_wd);
         row.setProperty("f_ext_date", external_date);
 
-        if (revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
+        Utils.showMsg("=> Revised Status: " + revise_status + " ; isRevised: " + is_revised + " ; status: " + status);
+
+        if (revise_status.equalsIgnoreCase("Pending approval")
+                && buttonAction.equalsIgnoreCase("Submit")
+                && is_revised.equalsIgnoreCase("Yes")) {
 
             if (!rev_remarks.equalsIgnoreCase("")) {
                 String rev_int_wd = row.getProperty("rev_internal_wd");
@@ -71,23 +86,18 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-                if (formId.equalsIgnoreCase("revise_target_form")||formId.equalsIgnoreCase("user_submit_form"))
+                if (formId.equalsIgnoreCase("reviseTargetForm"))
                     onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
             }
 
-        } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
-            Utils.showMsg("===>>  Pending Approval");
-            row.setProperty("status", "Completed");
-            if (formId.equalsIgnoreCase("revise_target_form")|| formId.equalsIgnoreCase("user_submit_form"))
-                    onCallBack.sendEmailOnFirstForm("Completed", formId);
-        }else if(formId.equalsIgnoreCase("user_submit_form")){
-                 onCallBack.sendEmailOnFirstForm("Draft", formId);
+            Utils.showMsg("===>>  1");
 
+        }else {
+            Utils.showMsg("===>>  else loop of 1");
         }
-            
     }
 //    public void SubmitToTL(String elemId){
 //        FormRow row = rowSet.get(0);
