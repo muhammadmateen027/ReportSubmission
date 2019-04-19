@@ -64,7 +64,8 @@ public class FormStatusClass implements QueryHandlerInterface {
         String tl_remarks = row.getProperty("tl_remarks");
         String userAction = "";
         String historyStatus = "";
-        if (tlAction.equalsIgnoreCase("Approved")) {
+        EmailClass ec = new EmailClass(formData, rowSet);
+        if (tlAction.equalsIgnoreCase("Approve")) {
             userAction = "TLApproved";
             historyStatus = "Request approved by TL and is pending by BU Finanac's approval";
         } else if (tlAction.equalsIgnoreCase("Reject")) {
@@ -73,6 +74,7 @@ public class FormStatusClass implements QueryHandlerInterface {
         }
         //row.setProperty("revise_status", "");
         row.setProperty("status", userAction);
+        ec.mainReqEmailComposer(userAction);
         qh.updateHistoryLog(uId, id, current_tl, historyStatus, tl_remarks);
 
     }
@@ -87,6 +89,7 @@ public class FormStatusClass implements QueryHandlerInterface {
         String bu_remarks = row.getProperty("bu_remarks");
         String userAction = "";
         String historyStatus = "";
+        EmailClass ec = new EmailClass(formData, rowSet);
         if (buAction.equalsIgnoreCase("Approved")) {
             userAction = "Closed";
             row.setProperty("is_revised", "yes");
@@ -98,6 +101,7 @@ public class FormStatusClass implements QueryHandlerInterface {
         }
 
         row.setProperty("status", userAction);
+        ec.mainReqEmailComposer(userAction);
         qh.updateHistoryLog(uId, id, current_bu, historyStatus, bu_remarks);
 
     }

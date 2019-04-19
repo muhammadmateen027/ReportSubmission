@@ -68,18 +68,18 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
             } else if (formId.equalsIgnoreCase("user_update_form")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateFormAction(id);
+                form.updateFormAction(id,formId);
 
             }else if (formId.equalsIgnoreCase("update_form")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
-                form.userUpdateNewForm(id);
+                form.userUpdateNewForm(id,formId);
 
             } 
             else if (formId.equalsIgnoreCase("user_UpdateManager")) {
                 String id = FormUtil.getElementParameterName(element);
                 RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateManagerFormAction(id);
+                form.updateManagerFormAction(id,formId);
 
             } else if (formId.equalsIgnoreCase("managerViewForm")) {
                 FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
@@ -109,12 +109,13 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
 //            emc.mainReqEmailComposer(stat);
 //        } 
          if (!stat.equalsIgnoreCase("") && 
-                formId.equalsIgnoreCase("revise_target_form")) {
+                (formId.equalsIgnoreCase("revise_target_form")
+                 || formId.equalsIgnoreCase("user_submit_form")
+                 ||formId.equalsIgnoreCase("user_update_form")
+                 ||formId.equalsIgnoreCase("update_form")
+                 ||formId.equalsIgnoreCase("user_UpdateManager"))) {
             emc.mainReqEmailComposer(stat);
             
-        }
-        else if (formId.equalsIgnoreCase("user_update_form")) {
-
         }
         Utils.showMsg("SetSubmit = False");
         return fm;

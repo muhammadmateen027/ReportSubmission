@@ -71,7 +71,7 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-                if (formId.equalsIgnoreCase("revise_target_form"))
+                if (formId.equalsIgnoreCase("revise_target_form")||formId.equalsIgnoreCase("user_submit_form"))
                     onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
@@ -81,7 +81,7 @@ public class RequestForm implements QueryHandlerInterface {
         } else if (!revise_status.equalsIgnoreCase("Pending approval") && buttonAction.equalsIgnoreCase("Submit")) {
             Utils.showMsg("===>>  Pending Approval");
             row.setProperty("status", "Completed");
-            if (formId.equalsIgnoreCase("revise_target_form"))
+            if (formId.equalsIgnoreCase("revise_target_form")|| formId.equalsIgnoreCase("user_submit_form"))
                     onCallBack.sendEmailOnFirstForm("Completed", formId);
         }
     }
@@ -96,7 +96,7 @@ public class RequestForm implements QueryHandlerInterface {
 //
 //    }
 
-    public void updateFormAction(String elemId) {
+    public void updateFormAction(String elemId,String formId) {
         FormRow row = rowSet.get(0);
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
@@ -142,8 +142,8 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-
-                onCallBack.sendEmail("Draft");
+                if (formId.equalsIgnoreCase("user_update_form"))
+                    onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
@@ -158,13 +158,14 @@ public class RequestForm implements QueryHandlerInterface {
                 && revise_status.equalsIgnoreCase("Pending approval")) {
             Utils.showMsg("===>>  4");
             row.setProperty("status", "Completed");
-            onCallBack.sendEmail("Completed");
+            if (formId.equalsIgnoreCase("user_update_form"))
+                    onCallBack.sendEmailOnFirstForm("Completed", formId);
         } else {
             Utils.showMsg("===>>  5");
         }
     }
 
-    public void userUpdateNewForm(String elemId) {
+    public void userUpdateNewForm(String elemId,String formId) {
         FormRow row = rowSet.get(0);
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
@@ -211,8 +212,8 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-
-                onCallBack.sendEmail("Draft");
+                if (formId.equalsIgnoreCase("update_form"))
+                    onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
@@ -228,14 +229,15 @@ public class RequestForm implements QueryHandlerInterface {
                 || revise_status.toString().equalsIgnoreCase("Rejected"))) {
             Utils.showMsg("===>>  4");
             row.setProperty("status", "Completed");
-            onCallBack.sendEmail("Completed");
+            if (formId.equalsIgnoreCase("update_form"))
+                    onCallBack.sendEmailOnFirstForm("Completed", formId);
         } else {
             Utils.showMsg("===>>  5");
         }
 
     }
 
-    public void updateManagerFormAction(String elemId) {
+    public void updateManagerFormAction(String elemId,String formId) {
         FormRow row = rowSet.get(0);
         String internal_wd = row.getProperty("int_wd");
         String internal_date = row.getProperty("int_date");
@@ -275,8 +277,8 @@ public class RequestForm implements QueryHandlerInterface {
                 if (status.equalsIgnoreCase("New")) {
                     row.setProperty("status", "Draft");
                 }
-
-                onCallBack.sendEmail("Draft");
+                if (formId.equalsIgnoreCase("user_UpdateManager"))
+                    onCallBack.sendEmailOnFirstForm("Draft", formId);
             } else {
                 Utils.showError(formData, elemId, "Revision remarks is compulsory.");
                 onCallBack.onFailure();
@@ -287,7 +289,8 @@ public class RequestForm implements QueryHandlerInterface {
                 && !revise_status.equalsIgnoreCase("Pending Approval")) {
             Utils.showMsg("===>>  In different Way");
             row.setProperty("status", "Completed");
-            onCallBack.sendEmail("Completed");
+            if (formId.equalsIgnoreCase("user_UpdateManager"))
+                    onCallBack.sendEmailOnFirstForm("Completed", formId);
         } else {
             Utils.showMsg("===>>  Else Triggered");
             Utils.showMsg("status: " + status + " & Button: " + buttonAction);
