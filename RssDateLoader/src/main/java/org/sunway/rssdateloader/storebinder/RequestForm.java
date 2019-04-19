@@ -83,7 +83,11 @@ public class RequestForm implements QueryHandlerInterface {
             row.setProperty("status", "Completed");
             if (formId.equalsIgnoreCase("revise_target_form")|| formId.equalsIgnoreCase("user_submit_form"))
                     onCallBack.sendEmailOnFirstForm("Completed", formId);
+        }else if(formId.equalsIgnoreCase("user_submit_form")){
+                 onCallBack.sendEmailOnFirstForm("Draft", formId);
+
         }
+            
     }
 //    public void SubmitToTL(String elemId){
 //        FormRow row = rowSet.get(0);
