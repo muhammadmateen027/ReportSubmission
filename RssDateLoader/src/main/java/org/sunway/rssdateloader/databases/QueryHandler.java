@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import javax.sql.DataSource;
 import org.joget.apps.app.service.AppUtil;
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.sunway.rssdateloader.formdataloader.QueryHandlerInterface;
+import org.sunway.rssdateloader.models.Model;
 import org.sunway.rssdateloader.utilities.Utils;
 
 /**
@@ -68,8 +71,7 @@ public class QueryHandler {
             }
         }
     }
-    
-    
+
     public void updateHistoryLog(String uId, String parentId, String userName, String logStatus, String logRemarks) {
         String query = "INSERT INTO app_audit_rss_historyLog (id, appDefId, rowId, loggedBy, logStatus, logRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         Connection con = getDatabaseConnection();
@@ -162,7 +164,7 @@ public class QueryHandler {
             }
         }
     }
-    
+
     public String getUserEmail(String username) {
         String userEmail = "";
         String query = "select email from dir_user where username = ?";
@@ -183,7 +185,7 @@ public class QueryHandler {
         }
         return userEmail;
     }
-    
+
     public String getUniqueId(String refNo) {
         String id = "";
         String query = "select distinct id from app_fd_rss_request_detail where c_refNo =  ?";
@@ -203,5 +205,107 @@ public class QueryHandler {
             }
         }
         return id;
+    }
+
+    public String getProcessIdFromFormId(String formId) {
+        String processId = "";
+        String query = "Select distinct processId from wf_process_link where originProcessId = ? ";
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+
+            stmtInsert.setString(1, formId);
+            ResultSet rSet = stmtInsert.executeQuery();
+            if (rSet != null) {
+                while (rSet.next()) {
+                    processId = rSet.getString("processId");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return processId;
+    }
+
+    public void updateRecordStatusById(String id) {
+        String query = "UPDATE app_fd_rss_request_detail SET c_status = ? WHERE id = ? ";
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+
+            stmtInsert.setString(1, "Closed");
+            stmtInsert.setString(2, id);
+            stmtInsert.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+    }
+
+    public List<Model> getPendingRecords() {
+        List<Model> recList = new ArrayList<Model>();
+        String query = "select distinct req.id, req.c_tl_action_time from app_fd_rss_request_detail as req,\n"
+                + "	app_fd_rss_subjects as sub \n"
+                + "	Where req.c_status = ? \n"
+                + "	AND req.c_sub_id = sub.c_sub_id \n"
+                + "     AND sub.c_auto_close = ? ";
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+
+            stmtInsert.setString(1, "TLApproved");
+            stmtInsert.setString(2, "Yes");
+            ResultSet rSet = stmtInsert.executeQuery();
+            if (rSet != null) {
+                while (rSet.next()) {
+                    Model model = new Model();
+                    model.setId(rSet.getString("id"));
+                    String[] parts = rSet.getString("c_tl_action_time").split(" ");
+                    model.setActionTime(parts[0]);
+                    recList.add(model);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return recList;
+    }
+    
+
+    private void updateHistoryLog(String uId, String parentId, String fullName) {
+        long id = 0;
+        String query = "INSERT INTO app_audit_slts_history (id, appDefId, rowId, loggedBy, logStatus) VALUES (?, ?, ?, ?, ?)";
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+
+            stmtInsert.setString(1, uId);
+            stmtInsert.setString(2, "lsts");
+            stmtInsert.setString(3, parentId);
+            stmtInsert.setString(4, fullName);
+            stmtInsert.setString(5, "Withdrawn");
+            stmtInsert.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
     }
 }

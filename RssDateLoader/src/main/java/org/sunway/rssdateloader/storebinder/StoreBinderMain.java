@@ -59,30 +59,10 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
 
         if (rowSet != null && !rowSet.isEmpty()) {
             this.formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
-            if (formId.equalsIgnoreCase("revise_target_form")||formId.equalsIgnoreCase("userTargetEditForm")) {
+            if (formId.equalsIgnoreCase("reviseTargetForm")) {
                 String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.performAction(id, formId);
-            }else if (formId.equalsIgnoreCase("reviseTargetForm")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
+                RequestForm form = new RequestForm(formData, rowSet);
                 form.reviseTargetAction(id,formId);
-
-            }else if (formId.equalsIgnoreCase("user_update_form")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateFormAction(id,formId);
-
-            }else if (formId.equalsIgnoreCase("update_form")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.userUpdateNewForm(id,formId);
-
-            } 
-            else if (formId.equalsIgnoreCase("user_UpdateManager")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateManagerFormAction(id,formId);
 
             } else if (formId.equalsIgnoreCase("managerViewForm")) {
                 FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
