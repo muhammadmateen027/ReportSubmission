@@ -6,7 +6,14 @@
 package org.sunway.rssdateloader.storebinder;
 
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
@@ -61,16 +68,20 @@ public class RequestForm implements QueryHandlerInterface {
             Utils.showMsg("===>>  else loop of 1");
         }
     }
-//    public void SubmitToTL(String elemId){
-//        FormRow row = rowSet.get(0);
-//        String buttonAction = row.getProperty("button_box");
-//        if(buttonAction.equalsIgnoreCase("Submit"))
-//        {
-//           row.setProperty("is_revised", "No");
-//           row.setProperty("status", "Completed"); 
-//        }
-//
-//    }
+    
+    public void createRequestForm() {
+        FormRow row = rowSet.get(0);
+        String int_date = row.getProperty("int_date");
+        try {
+            String kpiStatus = Utils.getKpiStatus(int_date);
+            row.setProperty("int_kpi_status", kpiStatus);
+        } catch (ParseException ex) {
+            Logger.getLogger(RequestForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
 
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

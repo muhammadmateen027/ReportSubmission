@@ -76,6 +76,10 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
                 formStatusClass.BUFormAction();
             }
+            else if (formId.equalsIgnoreCase("revise_target_form")) {
+                RequestForm form = new RequestForm(formData, rowSet);
+                form.createRequestForm();
+            }
 
         }
         if (setSubmit) {
@@ -83,23 +87,7 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
             fm = super.store(element, rowSet, formData);
         }
 
-        EmailClass emc = new EmailClass(formData, rowSet);
-//        if (!stat.equalsIgnoreCase("") && 
-//                (formId.equalsIgnoreCase("revise_target_form")
-//                || formId.equalsIgnoreCase("user_submit_form")
-//                || formId.equalsIgnoreCase("draftForm"))) {
-//            Utils.showMsg("After form submission status: " + stat);
-//            emc.mainReqEmailComposer(stat);
-//        } 
-         if (!stat.equalsIgnoreCase("") && 
-                (formId.equalsIgnoreCase("revise_target_form")
-                 || formId.equalsIgnoreCase("user_submit_form")
-                 ||formId.equalsIgnoreCase("user_update_form")
-                 ||formId.equalsIgnoreCase("update_form")
-                 ||formId.equalsIgnoreCase("user_UpdateManager"))) {
-            emc.mainReqEmailComposer(stat);
-            
-        }
+        
         Utils.showMsg("SetSubmit = False");
         return fm;
     }
