@@ -35,23 +35,14 @@ public class EmailClass implements QueryHandlerInterface {
     public void mainReqEmailComposer(String status) {
         Utils.showMsg("Inside Email Composer");
         FormRow row = rowSet.get(0);
-        String uId = UUID.randomUUID().toString();
         String team_leader = row.getProperty("team_leader");
-        String bu_leader=row.getProperty("bu_finance");
         String manager_id = row.getProperty("manager_id");
-        String ccToList=row.getProperty("cc_to");
         String closing_month = row.getProperty("closing_month");
         String subject = row.getProperty("sub_id");
         String company = row.getProperty("company_id");
-        String period_from = row.getProperty("period_from");
-        String period_to = row.getProperty("period_to");
-        String userName = row.getProperty("user_name");
         String refNo = row.getProperty("refNo");
-        String remarks = row.getProperty("remarks");
         String userId = row.getProperty("username");
         String current_manager_name = row.getProperty("current_manager");
-        String curent_tl_name=row.getProperty("current_tl");
-        String current_bu_name=row.getProperty("current_bu");
 
         String id = qh.getUniqueId(refNo);
 //        String server = Utils.getEnvVar("fssrss", "rss_server");
@@ -67,64 +58,26 @@ public class EmailClass implements QueryHandlerInterface {
             String cc = "";
             String message = "";
 
-            if (status.equalsIgnoreCase("Completed")) {
-                qh.updateHistoryLog(uId, id, userName, status, remarks);
-                to = team_leader;
-                link = Utils.getlink(server, "tl_approval", id, refNo);
-                emailSubject = "FSSC Report Submission (" + subject + " From " + period_from + " To " + period_to + ") - "
-                        + company + " has been completed by " + userName + ". Your approval is required.";
-            } else if (status.equalsIgnoreCase("Draft")) {
-                qh.updateHistoryLog(uId, id, userName, status, remarks);
+            if (status.equalsIgnoreCase("Pending approval")) {
                 link = Utils.getlink(server, "manager_approval", id, refNo);
                 to = manager_id;
                 cc = team_leader;
                 emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " is pending for your approval.";
-            } else if (status.equalsIgnoreCase("Rejected")) {
-                
-                to = qh.getUserEmail(userId);
-                cc = team_leader;
-                link = Utils.getlink(server, "myRequests", id, refNo);
-                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been rejected by "+ current_manager_name;
             } else if (status.equalsIgnoreCase("Approved")) {
                 to = qh.getUserEmail(userId);
                 cc = team_leader;
                 link = Utils.getlink(server, "myRequests", id, refNo);
                 emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been approved by "+ current_manager_name;
-            }//TL
-            else if (status.equalsIgnoreCase("TLRejected")) {
-                
+            }else if (status.equalsIgnoreCase("Rejected")) {
                 to = qh.getUserEmail(userId);
-                cc = team_leader+";"+ccToList;
-                link = Utils.getlink(server, "pending_tasks", id, refNo);
-                emailSubject = "FSSC Report Submission (" + subject + " From " + period_from + " To " + period_to + ") - "
-                        + company + " has been rejected by " + curent_tl_name + ". Your further action is required.";
-            } else if (status.equalsIgnoreCase("TLApproved")) {
-                to = bu_leader;
-                cc = team_leader+";"+ccToList+";"+qh.getUserEmail(userId);
-                link = Utils.getlink(server, "buFinance_approval", id, refNo);
-                emailSubject = "FSSC Report Submission (" + subject + " From " + period_from + " To " + period_to + ") - "
-                        + company + " has been approved by " + curent_tl_name + ". Your further approval is required.";
-            }//ends
-            //BU
-            else if (status.equalsIgnoreCase("BURejected")) {
-                
-                to = qh.getUserEmail(userId);
-                cc = team_leader+";"+bu_leader+";"+ccToList;
-                link = Utils.getlink(server, "pending_tasks", id, refNo);
-                emailSubject = "FSSC Report Submission (" + subject + " From " + period_from + " To " + period_to + ") - "
-                        + company + " has been rejected by " + current_bu_name + ". Your further action is required.";
-            } else if (status.equalsIgnoreCase("BUApproved")) {
-                to = qh.getUserEmail(userId);
-                cc = team_leader+";"+bu_leader+";"+ccToList;
+                cc = team_leader;
                 link = Utils.getlink(server, "myRequests", id, refNo);
-                emailSubject = "FSSC Report Submission (" + subject + " From " + period_from + " To " + period_to + ") - "
-                        + company + " has been fully approved by " + current_bu_name + ".";
-            }//ends
+                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been rejected by "+ current_manager_name;
+            } 
 
             message = "Dear Sir / Madam, \n\n"
                     + "Please click the reference number to open the document :" + link
                     + Utils.emailFooter();
-
             if (to.equalsIgnoreCase("") || to == null) {
                 Utils.showMsg("No email");
             } else Utils.composeEmail("", to, cc, emailSubject, message);

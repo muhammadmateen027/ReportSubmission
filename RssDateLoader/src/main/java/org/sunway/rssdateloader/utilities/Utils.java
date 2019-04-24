@@ -5,10 +5,12 @@
  */
 package org.sunway.rssdateloader.utilities;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
@@ -81,6 +83,24 @@ public class Utils {
 
     public static void showError(FormData mData, String elementId, String st) {
         mData.addFormError(elementId, st);
+    }
+    
+    public static String getKpiStatus(String internalDate) throws ParseException {
+        String kpiStatus = "";
+        
+        DateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
+        
+        Date currentDate = formater.parse(formater.format(new Date()));
+        Date validDate = formater.parse(internalDate);
+
+        if (currentDate.equals(validDate)) {
+            kpiStatus = "Preparer Meet";
+        } else if(currentDate.compareTo(validDate) < 0) {
+            kpiStatus = "Preparer Exceed";
+        } else if(currentDate.compareTo(validDate) > 0) {
+            kpiStatus = "Preparer Delay";
+        }
+        return kpiStatus;
     }
 
     public static String getDateFromWD(String date, int noOfDays, List<String> holidays) {

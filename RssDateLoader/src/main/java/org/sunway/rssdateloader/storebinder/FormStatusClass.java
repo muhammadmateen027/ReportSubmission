@@ -6,13 +6,17 @@
 package org.sunway.rssdateloader.storebinder;
 
 import java.sql.ResultSet;
+import java.text.ParseException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
 import org.sunway.rssdateloader.databases.QueryHandler;
 import org.sunway.rssdateloader.emailcomposers.EmailClass;
 import org.sunway.rssdateloader.formdataloader.QueryHandlerInterface;
+import org.sunway.rssdateloader.utilities.Utils;
 
 /**
  *
@@ -44,13 +48,13 @@ public class FormStatusClass implements QueryHandlerInterface {
         EmailClass ec = new EmailClass(formData, rowSet);
         if (mgrAction.equalsIgnoreCase("Approve")) {
             userAction = "Approved";
-            
+
         } else if (mgrAction.equalsIgnoreCase("Reject")) {
             userAction = "Rejected";
             row.setProperty("rev_internal_wd", "");
             row.setProperty("rev_external_wd", "");
             row.setProperty("rev_int_date", "");
-            row.setProperty("rev_ext_date", "");            
+            row.setProperty("rev_ext_date", "");
         }
         row.setProperty("is_revised", "No");
         row.setProperty("revise_status", userAction);
@@ -66,46 +70,40 @@ public class FormStatusClass implements QueryHandlerInterface {
         String id = row.getProperty("id");
         String current_tl = row.getProperty("current_tl");
         String tl_remarks = row.getProperty("tl_remarks");
-        String userAction = "";
         String historyStatus = "";
-        EmailClass ec = new EmailClass(formData, rowSet);
+
         if (tlAction.equalsIgnoreCase("Approve")) {
-            userAction = "TLApproved";
+            String ext_date = row.getProperty("ext_date");
+            try {
+                String kpiStatus = Utils.getKpiStatus(ext_date);
+                
+                row.setProperty("ext_kpi_status", kpiStatus.replaceAll("\\bPreparer\\b", "TL") );
+            } catch (ParseException ex) {
+                Logger.getLogger(FormStatusClass.class.getName()).log(Level.SEVERE, null, ex);
+            }
             historyStatus = "Request approved by TL and is pending by BU Finanac's approval";
         } else if (tlAction.equalsIgnoreCase("Reject")) {
-            userAction = "TLRejected";
             historyStatus = "Request rejected by TL and is pending for completion";
         }
-        //row.setProperty("revise_status", "");
-        row.setProperty("status", userAction);
-        ec.mainReqEmailComposer(userAction);
         qh.updateHistoryLog(uId, id, current_tl, historyStatus, tl_remarks);
-
     }
 
     public void BUFormAction() {
 
         FormRow row = rowSet.get(0);
         String uId = UUID.randomUUID().toString();
-        String buAction = row.getProperty("actionButton");
+        String buAction = row.getProperty("buActionButtons");
         String id = row.getProperty("id");
         String current_bu = row.getProperty("current_bu");
         String bu_remarks = row.getProperty("bu_remarks");
-        String userAction = "";
         String historyStatus = "";
-        EmailClass ec = new EmailClass(formData, rowSet);
-        if (buAction.equalsIgnoreCase("Approved")) {
-            userAction = "Closed";
-            row.setProperty("is_revised", "yes");
+
+        if (buAction.equalsIgnoreCase("Approve")) {
             historyStatus = "Request approved by BU Finanace and is fully closed";
         } else if (buAction.equalsIgnoreCase("Reject")) {
-            userAction = "BURejected";
-            row.setProperty("is_revised", "No");
             historyStatus = "Request rejected by BU and is pending for completion";
         }
 
-        row.setProperty("status", userAction);
-        ec.mainReqEmailComposer(userAction);
         qh.updateHistoryLog(uId, id, current_bu, historyStatus, bu_remarks);
 
     }

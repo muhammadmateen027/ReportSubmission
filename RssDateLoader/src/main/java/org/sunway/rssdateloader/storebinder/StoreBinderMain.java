@@ -59,30 +59,10 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
 
         if (rowSet != null && !rowSet.isEmpty()) {
             this.formId = super.getFormId(); // Take form Id to detect and perform action on Specific form
-            if (formId.equalsIgnoreCase("revise_target_form")||formId.equalsIgnoreCase("userTargetEditForm")) {
+            if (formId.equalsIgnoreCase("reviseTargetForm")) {
                 String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.performAction(id, formId);
-            }else if (formId.equalsIgnoreCase("reviseTargetForm")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
+                RequestForm form = new RequestForm(formData, rowSet);
                 form.reviseTargetAction(id,formId);
-//testing
-            }else if (formId.equalsIgnoreCase("user_update_form")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateFormAction(id,formId);
-
-            }else if (formId.equalsIgnoreCase("update_form")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.userUpdateNewForm(id,formId);
-
-            } 
-            else if (formId.equalsIgnoreCase("user_UpdateManager")) {
-                String id = FormUtil.getElementParameterName(element);
-                RequestForm form = new RequestForm(formData, rowSet, this);
-                form.updateManagerFormAction(id,formId);
 
             } else if (formId.equalsIgnoreCase("managerViewForm")) {
                 FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
@@ -96,6 +76,10 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
                 FormStatusClass formStatusClass = new FormStatusClass(formData, rowSet);
                 formStatusClass.BUFormAction();
             }
+            else if (formId.equalsIgnoreCase("revise_target_form")) {
+                RequestForm form = new RequestForm(formData, rowSet);
+                form.createRequestForm();
+            }
 
         }
         if (setSubmit) {
@@ -103,23 +87,7 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
             fm = super.store(element, rowSet, formData);
         }
 
-        EmailClass emc = new EmailClass(formData, rowSet);
-//        if (!stat.equalsIgnoreCase("") && 
-//                (formId.equalsIgnoreCase("revise_target_form")
-//                || formId.equalsIgnoreCase("user_submit_form")
-//                || formId.equalsIgnoreCase("draftForm"))) {
-//            Utils.showMsg("After form submission status: " + stat);
-//            emc.mainReqEmailComposer(stat);
-//        } 
-         if (!stat.equalsIgnoreCase("") && 
-                (formId.equalsIgnoreCase("revise_target_form")
-                 || formId.equalsIgnoreCase("user_submit_form")
-                 ||formId.equalsIgnoreCase("user_update_form")
-                 ||formId.equalsIgnoreCase("update_form")
-                 ||formId.equalsIgnoreCase("user_UpdateManager"))) {
-            emc.mainReqEmailComposer(stat);
-            
-        }
+        
         Utils.showMsg("SetSubmit = False");
         return fm;
     }
