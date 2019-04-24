@@ -41,6 +41,8 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     final String pluginName = "RSS - ExcelTemplate";
     final String version = "1.0";
     JSONArray jSONArray;
+    List<String> subList = null;
+    List<String> envList = null;
 
     //PrintWriter out;
     @Override
@@ -90,10 +92,10 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
         if (!closingDate.equalsIgnoreCase("")) {
             query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            List<String> subList = qh.getInfo(query, closingDate);
+            subList = qh.getInfo(query, closingDate);
             Utils.showMsg("a");
             query = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            List<String> envList = qh.getInfo(query, closingDate);
+            envList = qh.getInfo(query, closingDate);
             Utils.showMsg("b");
             List<Model> actualData = qh.getKPITasksByMonth(closingDate);
             Utils.showMsg("c");
@@ -116,6 +118,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                         if (actualData.get(k).getIntKpiStatus().equalsIgnoreCase(intStatus.get(l).toString())) {
                                             Utils.showMsg("7");
                                             intCount++;
+                                            createList(actualData.get(k), 1);
                                             Utils.showMsg("Subj: " + actualData.get(k).getSubject()
                                                     + "Env: " + actualData.get(k).getEnv()
                                                     + " Internal: " + intStatus.get(l) + " : count: " + String.valueOf(intCount));
@@ -160,6 +163,12 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         }
 
     }
+    
+    private void createList(Model model, int count) {
+        if (subList != null && envList != null) {
+            
+        }
+    }
 
     private List<String> getStatus(String type) {
         List<String> list = new ArrayList<String>();
@@ -175,7 +184,8 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return list;
     }
 
-    private void createWorkBook(HttpServletResponse response) {
+    private void createWorkBook(HttpServletResponse response, Model actualData) {
+        
         ServletOutputStream outStream;
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Users List");
@@ -183,6 +193,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
         Map< String, Object[]> empinfo;
         empinfo = new TreeMap< String, Object[]>();
+        
         empinfo.put("1", new Object[]{
             "EMP ID", "EMP NAME", "DESIGNATION"});
 
