@@ -85,10 +85,12 @@ public class StoreBinderMain extends WorkflowFormBinder implements OnCallBack {
         if (setSubmit) {
             Utils.showMsg("SetSubmit = true");
             fm = super.store(element, rowSet, formData);
+        } else {
+            Utils.showMsg("SetSubmit = False");
         }
 
         
-        Utils.showMsg("SetSubmit = False");
+        
         return fm;
     }
 
