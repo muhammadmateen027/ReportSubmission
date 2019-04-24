@@ -14,6 +14,43 @@ package org.sunway.rssdateloader.models;
 public class Model {
     String id="";
     String actionTime="";
+    
+    String env = "";
+    String intKpiStatus = "";
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
+    }
+
+    public String getIntKpiStatus() {
+        return intKpiStatus;
+    }
+
+    public void setIntKpiStatus(String intKpiStatus) {
+        this.intKpiStatus = intKpiStatus;
+    }
+
+    public String getExtKpiStatus() {
+        return extKpiStatus;
+    }
+
+    public void setExtKpiStatus(String extKpiStatus) {
+        this.extKpiStatus = extKpiStatus;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+    String extKpiStatus = "";
+    String subject = "";
 
     public String getId() {
         return id;
