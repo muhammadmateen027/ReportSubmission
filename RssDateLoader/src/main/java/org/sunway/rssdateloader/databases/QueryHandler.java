@@ -284,7 +284,6 @@ public class QueryHandler {
         }
         return recList;
     }
-    
 
     private void updateHistoryLog(String uId, String parentId, String fullName) {
         long id = 0;
@@ -307,5 +306,65 @@ public class QueryHandler {
                 closeDatabaseConnection(con);
             }
         }
+    }
+
+    public List<Model> getKPITasksByMonth(String closeMonth) {
+        List<Model> list = new ArrayList<Model>();
+        String query = "select distinct id, c_env, c_int_kpi_status, c_ext_kpi_status, c_sub_id,c_manager_name, c_close_mnth from "
+                + "app_fd_rss_request_detail Where c_close_mnth =  ? ";
+
+        Connection con = getDatabaseConnection();
+        PreparedStatement stmtInsert;
+        try {
+            stmtInsert = con.prepareStatement(query);
+            stmtInsert.setString(1, closeMonth);
+            ResultSet rSet = stmtInsert.executeQuery();
+
+            if (rSet != null) {
+                while (rSet.next()) {
+                    Model model = new Model();
+                    model.setId(rSet.getString("id"));
+                    model.setEnv(rSet.getString("c_env"));
+                    model.setSubject(rSet.getString("c_sub_id"));
+                    model.setManager(rSet.getString("c_manager_name"));
+                    if (!rSet.getString("c_int_kpi_status").equalsIgnoreCase("")
+                            || rSet.getString("c_int_kpi_status") != null)
+                        model.setIntKpiStatus(rSet.getString("c_int_kpi_status"));
+                    else  model.setIntKpiStatus("");
+                    if (!rSet.getString("c_ext_kpi_status").equalsIgnoreCase("")
+                            || rSet.getString("c_ext_kpi_status") != null) 
+                        model.setExtKpiStatus(rSet.getString("c_ext_kpi_status"));
+                    else model.setExtKpiStatus("");
+                    list.add(model);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return list;
+    }
+    
+    public List<String> getInfo(String query, String month) {    
+        List<String> list = new ArrayList<String>();
+        Connection con = getDatabaseConnection();
+        try {
+            PreparedStatement stmt2 = con.prepareStatement(query);
+            stmt2.setString(1, month);
+            ResultSet rSet = stmt2.executeQuery();
+            while (rSet.next()) {
+                list.add(rSet.getString("col"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return list;
     }
 }

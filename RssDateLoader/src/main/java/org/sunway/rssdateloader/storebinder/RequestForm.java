@@ -47,7 +47,7 @@ public class RequestForm implements QueryHandlerInterface {
         String id = row.getProperty("id");
         String current_tl = row.getProperty("current_tl");
         String uId = UUID.randomUUID().toString();
-        
+
         EmailClass ec = new EmailClass(formData, rowSet);
 
         if (buttonAction.equalsIgnoreCase("Submit to Manager")) {
@@ -61,27 +61,55 @@ public class RequestForm implements QueryHandlerInterface {
             row.setProperty("f_int_date", rev_int_date);
             row.setProperty("f_ext_wd", rev_ext_wd);
             row.setProperty("f_ext_date", rev_ext_date);
-            
+
             ec.mainReqEmailComposer(revise_status);
             qh.updateHistoryLog(uId, id, current_tl, revise_status, rev_remarks);
         } else {
             Utils.showMsg("===>>  else loop of 1");
         }
     }
-    
+
     public void createRequestForm() {
         FormRow row = rowSet.get(0);
         String int_date = row.getProperty("int_date");
+        String kpiStatus = "";
+        Utils.showMsg("1");
         try {
-            String kpiStatus = Utils.getKpiStatus(int_date);
+            kpiStatus = getKpiStatus(int_date);
+            Utils.showMsg("2 : " +kpiStatus);
             row.setProperty("int_kpi_status", kpiStatus);
+            Utils.showMsg("3");
+        } finally {
+            if (kpiStatus.equalsIgnoreCase("")) {
+                Utils.showMsg("4");
+                kpiStatus = getKpiStatus(int_date);
+                Utils.showMsg("5");
+                row.setProperty("int_kpi_status", kpiStatus);
+                Utils.showMsg("6");
+            }
+        }
+    }
+
+    private String getKpiStatus(String internalDate) {
+        String kpiStatus = "";
+        try {
+            DateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
+            Date currentDate = formater.parse(formater.format(new Date()));
+            Date validDate = formater.parse(internalDate);
+
+            if (currentDate.equals(validDate)) {
+                kpiStatus = "Preparer Meet";
+            } else if (currentDate.compareTo(validDate) < 0) {
+                kpiStatus = "Preparer Exceed";
+            } else if (currentDate.compareTo(validDate) > 0) {
+                kpiStatus = "Preparer Delay";
+            }
         } catch (ParseException ex) {
             Logger.getLogger(RequestForm.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Utils.showMsg("Internal KPI Status: "+kpiStatus);
+        return kpiStatus;
     }
-    
-    
-    
 
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
