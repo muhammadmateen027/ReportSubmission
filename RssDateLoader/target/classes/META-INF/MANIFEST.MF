@@ -1,7 +1,13 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Bnd-LastModified: 1556252733395
 Build-Jdk: 1.8.0_201
 Built-By: kirthikan
+=======
+Bnd-LastModified: 1556098659055
+Build-Jdk: 1.8.0_162
+Built-By: omen
+>>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
 Bundle-Activator: org.sunway.rssdateloader.Activator
 Bundle-ClassPath: .,dependency/servlet-api-2.5.jar,dependency/poi-3.12.j
  ar,dependency/commons-codec-1.9.jar,dependency/poi-ooxml-3.12.jar,depen
@@ -41,4 +47,4 @@ Import-Package: org.joget.report.dao,org.joget.report.model,org.joget.re
  userview.service,org.joget.apps.workflow.lib,javax.servlet,javax.servle
  t.http,org.osgi.framework;version="1.3.0"
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-Tool: Bnd-4.1.0.201810181252
+Tool: Bnd-3.5.0.201709291849
