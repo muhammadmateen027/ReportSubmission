@@ -20,7 +20,35 @@ public class Model {
     String env = "";
     String kpiStatus="";
     String manager="";
-    int count=0;
+    int count=0;    
+    String company="";
+    String picName="";
+    String tlName="";
+
+    public String getTlName() {
+        return tlName;
+    }
+
+    public void setTlName(String tlName) {
+        this.tlName = tlName;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPicName() {
+        return picName;
+    }
+
+    public void setPicName(String picName) {
+        this.picName = picName;
+    }
+
 
     public String getEnv() {
         return env;

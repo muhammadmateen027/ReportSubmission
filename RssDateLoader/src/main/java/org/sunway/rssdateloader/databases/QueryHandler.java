@@ -310,7 +310,7 @@ public class QueryHandler {
 
     public List<Model> getKPITasksByMonth(String closeMonth) {
         List<Model> list = new ArrayList<Model>();
-        String query = "select distinct id, c_env, c_manager_name, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth from "
+        String query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth from "
                 + "app_fd_rss_request_detail Where c_close_mnth =  ? ";
         Connection con = getDatabaseConnection();
         PreparedStatement stmtInsert;
@@ -326,6 +326,9 @@ public class QueryHandler {
                     model.setEnv(rSet.getString("c_env"));
                     model.setSubject(rSet.getString("c_sub_id"));
                     model.setManager(rSet.getString("c_manager_name"));
+                    model.setCompany(rSet.getString("c_company_id"));
+                    model.setPicName(rSet.getString("c_pic_name"));
+                    model.setTlName(rSet.getString("c_tlName"));
                     if (!rSet.getString("c_int_kpi_status").equalsIgnoreCase("")
                             || rSet.getString("c_int_kpi_status") != null)
                         model.setIntKpiStatus(rSet.getString("c_int_kpi_status"));
