@@ -46,12 +46,9 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     JSONArray jSONArray;
     List<String> subList = null;
     List<String> envList = null;
-<<<<<<< HEAD
     List<String> mgrList=null;
     Model dummy=new Model();
     List<Model> dummyList=new ArrayList<Model>();
-=======
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
 
     //PrintWriter out;
     @Override
@@ -89,7 +86,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         String filename = "RSS-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-<<<<<<< HEAD
         Utils.showMsg("0");
         ServletOutputStream outStream;
         String closingDate = request.getParameter("closingDate");
@@ -101,136 +97,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("By Environment");
         XSSFSheet sheet1 = workbook.createSheet("By Manager");
-=======
-        QueryHandler qh = new QueryHandler(this);
-        String query = "";
-
-        Utils.showMsg("0");
-        String closingDate = request.getParameter("closingDate");
-        closingDate = "04-2019";
-
-        List<String> intStatus = getStatus("internal");
-        List<String> extStatus = getStatus("external");
-
-        if (!closingDate.equalsIgnoreCase("")) {
-            query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(query, closingDate);
-            Utils.showMsg("a");
-            query = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            envList = qh.getInfo(query, closingDate);
-            Utils.showMsg("b");
-            List<Model> actualData = qh.getKPITasksByMonth(closingDate);
-            Utils.showMsg("c");
-            if (actualData.size() != 0) {
-                for (int i = 0; i < subList.size(); i++) {
-                    Utils.showMsg("1");
-                    for (int j = 0; j < envList.size(); j++) {
-                        int intCount = 0;
-                        int extCount = 0;
-                        Utils.showMsg("2");
-                        for (int k = 0; k < actualData.size(); k++) {
-                            Utils.showMsg("3");
-
-                            for (int l = 0; l < intStatus.size(); l++) {
-                                Utils.showMsg("4");
-                                if (actualData.get(k).getEnv().equalsIgnoreCase(envList.get(j))) {
-                                    Utils.showMsg("5");
-                                    if (actualData.get(k).getSubject().equalsIgnoreCase(subList.get(i))) {
-                                        Utils.showMsg("6");
-                                        if (actualData.get(k).getIntKpiStatus().equalsIgnoreCase(intStatus.get(l).toString())) {
-                                            Utils.showMsg("7");
-                                            intCount++;
-                                            createList(actualData.get(k), 1);
-                                            Utils.showMsg("Subj: " + actualData.get(k).getSubject()
-                                                    + "Env: " + actualData.get(k).getEnv()
-                                                    + " Internal: " + intStatus.get(l) + " : count: " + String.valueOf(intCount));
-                                        }
-                                    }
-
-                                }
-                            }
-
-//                            for (int m = 0; m < extStatus.length; m++) {
-//                                Utils.showMsg("8");
-//                                if (actualData.get(k).getEnv().equalsIgnoreCase(envList.get(j))
-//                                        && actualData.get(k).getSubject().equalsIgnoreCase(subList.get(i))
-//                                        && actualData.get(k).getIntKpiStatus().equalsIgnoreCase(intStatus[m])) {
-//                                    extCount++;
-//
-//                                    Utils.showMsg("External: " + intStatus[m] + " : count: " + String.valueOf(extCount));
-//                                }
-//                            }
-                            Utils.showMsg("Internal Count: " + String.valueOf(intCount));
-                            Utils.showMsg("External Count: " + String.valueOf(extCount));
-                        }
-
-                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
-                    }
-
-                }
-            } else {
-                Utils.showMsg("Helllooo ");
-            }
-
-//            for(int i=0; i < intenalStatus.length ; i++) {
-//                
-//            }
-//            for(int i=0; i < subJectList.size(); i++)
-//            if (data.size() != 0) {
-//                for (int i=0; i<data.size(); i++) {
-//                    if (data.get(i).getIntKpiStatus().equalsIgnoreCase("TLExceed"))
-//                }
-//            }
-        }
-
-    }
-    
-    private void createList(Model model, int count) {
-        if (subList != null && envList != null) {
-            
-        }
-    }
-
-    private List<String> getStatus(String type) {
-        List<String> list = new ArrayList<String>();
-        if (type.equalsIgnoreCase("internal")) {
-            list.add("Preparer Exceed");
-            list.add("Preparer Meet");
-            list.add("Preparer Delay");
-        } else {
-            list.add("TL Exceed");
-            list.add("TL Meet");
-            list.add("TL Delay");
-        }
-        return list;
-    }
-
-    private void createWorkBook(HttpServletResponse response, Model actualData) {
-        
-        ServletOutputStream outStream;
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Users List");
-        Row headingRow = sheet.createRow(0);
-
-        Map< String, Object[]> empinfo;
-        empinfo = new TreeMap< String, Object[]>();
-        
-        empinfo.put("1", new Object[]{
-            "EMP ID", "EMP NAME", "DESIGNATION"});
-
-        empinfo.put("2", new Object[]{
-            "tp01", "Gopal", "Technical Manager"});
-
-        empinfo.put("3", new Object[]{
-            "tp02", "Manisha", "Proof Reader"});
-
-        empinfo.put("4", new Object[]{
-            "tp03", "Masthan", "Technical Writer"});
-
-        empinfo.put("5", new Object[]{
-            "tp04", "Satish", "Technical Writer"});
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
 
         // To create Heading
 //        String[] headings = {"KPI Status", "KPI Tasks", "Environment", "Count"};
@@ -326,10 +192,10 @@ Utils.showMsg("column count done");
         } catch (IOException ex) {
             Utils.showMsg(ex.getMessage());
         }
+       
+
     }
     
-
-<<<<<<< HEAD
     private List<String> getStatus(String type) {
         List<String> list = new ArrayList<String>();
         if (type.equalsIgnoreCase("internal")) {
@@ -343,6 +209,7 @@ Utils.showMsg("column count done");
         }
         return list;
     }
+
 
     private List<Model> createEnvSheet(String closingDate) {
         QueryHandler qh = new QueryHandler(this);
@@ -541,8 +408,6 @@ Utils.showMsg("------------->Inside manager");
         return excelList;
     }
 
-=======
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
     @Override
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -557,7 +422,6 @@ Utils.showMsg("------------->Inside manager");
     public void onHolidayCallBack(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-<<<<<<< HEAD
     private void setFontStyle(Cell cell, XSSFWorkbook workbook){
         // create font
         XSSFFont font= workbook.createFont();
@@ -577,9 +441,7 @@ Utils.showMsg("------------->Inside manager");
         // Setting cell style
         cell.setCellStyle(style);
     }
-=======
 
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
 }
 
 

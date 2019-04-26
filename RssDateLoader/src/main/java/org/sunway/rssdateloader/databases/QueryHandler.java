@@ -308,49 +308,10 @@ public class QueryHandler {
         }
     }
 
-<<<<<<< HEAD
     public List<Model> getKPITasksByMonth(String closeMonth) {
         List<Model> list = new ArrayList<Model>();
-        String query = "select distinct id, c_env, c_int_kpi_status, c_ext_kpi_status, c_sub_id,c_manager_name, c_close_mnth from "
-=======
-    private int getKPIMonthlyTasks(String subject, String env, String kpiStatus, String closeMonth) {
-        int totalEnv = 0;
-        String query = "select count(c_env) as total from app_fd_rss_request_detail Where "
-                + "c_sub_id = ? AND c_env = ? AND c_int_kpi_status = ? AND c_close_mnth = ? ";
-
-        Connection con = getDatabaseConnection();
-        PreparedStatement stmtInsert;
-        try {
-            stmtInsert = con.prepareStatement(query);
-
-            stmtInsert.setString(1, subject);
-            stmtInsert.setString(2, env);
-            stmtInsert.setString(3, kpiStatus);
-            stmtInsert.setString(4, closeMonth);
-            ResultSet rSet = stmtInsert.executeQuery();
-
-            if (rSet != null) {
-                while (rSet.next()) {
-                    totalEnv = rSet.getInt(1);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (con != null) {
-                closeDatabaseConnection(con);
-            }
-        }
-
-        return totalEnv;
-    }
-
-    public List<Model> getKPITasksByMonth(String closeMonth) {
-        List<Model> list = new ArrayList<Model>();
-        String query = "select distinct id, c_env, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth from "
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
+        String query = "select distinct id, c_env, c_manager_name, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth from "
                 + "app_fd_rss_request_detail Where c_close_mnth =  ? ";
-
         Connection con = getDatabaseConnection();
         PreparedStatement stmtInsert;
         try {
@@ -364,11 +325,7 @@ public class QueryHandler {
                     model.setId(rSet.getString("id"));
                     model.setEnv(rSet.getString("c_env"));
                     model.setSubject(rSet.getString("c_sub_id"));
-<<<<<<< HEAD
                     model.setManager(rSet.getString("c_manager_name"));
-=======
-                    
->>>>>>> c02858cec5e36b146374ae2774fba030e5ba7366
                     if (!rSet.getString("c_int_kpi_status").equalsIgnoreCase("")
                             || rSet.getString("c_int_kpi_status") != null)
                         model.setIntKpiStatus(rSet.getString("c_int_kpi_status"));
