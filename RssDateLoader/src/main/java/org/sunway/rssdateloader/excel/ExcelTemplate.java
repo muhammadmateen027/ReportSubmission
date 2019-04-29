@@ -368,10 +368,14 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
                                 }
                             }
+                            
                             mod.setKpiStatus(extStatus.get(m));
                             mod.setSubject(subList.get(i));
                             mod.setEnv(envList.get(j));
-                            mod.setCount(extCount);
+                            mod.setCount(extCount); // This count is 
+                            
+                            //TODO: There we need the PI and TestENV number in same row but unfortunately I've tried alot of things
+                            // But unable to insert in front column.
                             excelList.add(mod);
 
                             Utils.showMsg("External Count: " + String.valueOf(extCount));

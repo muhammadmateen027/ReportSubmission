@@ -24,6 +24,86 @@ public class Model {
     String company="";
     String picName="";
     String tlName="";
+    int TestEnv=0;    
+    int Construction=0;    
+    int Dekon=0;    
+    int Emerging=0;    
+    int Hotel=0;    
+    int Medical=0;    
+    int PDD=0;    
+    int PI=0;
+
+    public Model(int testEnv, int pi){
+        this.TestEnv = testEnv;
+        this.PI = pi;
+    }
+    
+    public Model(){}
+
+    public int getTestEnv() {
+        return TestEnv;
+    }
+
+    public void setTestEnv(int TestEnv) {
+        this.TestEnv = TestEnv;
+    }
+
+    public int getConstruction() {
+        return Construction;
+    }
+
+    public void setConstruction(int Construction) {
+        this.Construction = Construction;
+    }
+
+    public int getDekon() {
+        return Dekon;
+    }
+
+    public void setDekon(int Dekon) {
+        this.Dekon = Dekon;
+    }
+
+    public int getEmerging() {
+        return Emerging;
+    }
+
+    public void setEmerging(int Emerging) {
+        this.Emerging = Emerging;
+    }
+
+    public int getHotel() {
+        return Hotel;
+    }
+
+    public void setHotel(int Hotel) {
+        this.Hotel = Hotel;
+    }
+
+    public int getMedical() {
+        return Medical;
+    }
+
+    public void setMedical(int Medical) {
+        this.Medical = Medical;
+    }
+
+    public int getPDD() {
+        return PDD;
+    }
+
+    public void setPDD(int PDD) {
+        this.PDD = PDD;
+    }
+
+    public int getPI() {
+        return PI;
+    }
+
+    public void setPI(int PI) {
+        this.PI = PI;
+    }
+
 
     public String getTlName() {
         return tlName;

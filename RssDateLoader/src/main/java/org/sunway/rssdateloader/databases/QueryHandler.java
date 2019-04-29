@@ -72,6 +72,86 @@ public class QueryHandler {
         }
     }
 
+    public void getMonthlyData() {
+        String query = "select  c_manager_id, c_team_leader, c_manager_name, c_tlName\n"
+                + "	from app_fd_rss_request_detail \n"
+                + "    where (c_int_kpi_status = ? OR c_ext_kpi_status = ? ) "
+                + " AND c_close_mnth = DATE_FORMAT( CURDATE() - INTERVAL 1 MONTH, '%m-%Y' ) "
+                + " AND c_status != ? ";
+        Connection con = getDatabaseConnection();
+
+        try {
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, "Preparer Delay");
+            statement.setString(2, "TL Delay");
+            statement.setString(3, "Closed");
+            ResultSet rSet = statement.executeQuery();
+            if (rSet != null) {
+                queryHandlerInterface.onSuccess(rSet);
+            } else {
+                queryHandlerInterface.onFailure();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+    }
+
+    public void getManagerPendingApproval() {
+        String query = "select  c_manager_id, c_manager_name\n"
+                + "	from app_fd_rss_request_detail \n"
+                + "    where c_revise_status = ? AND c_status != ? ";
+        Connection con = getDatabaseConnection();
+
+        try {
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, "Pending Approval");
+            statement.setString(2, "Closed");
+            ResultSet rSet = statement.executeQuery();
+            if (rSet != null) {
+                queryHandlerInterface.onSuccess(rSet);
+            } else {
+                queryHandlerInterface.onFailure();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+    }
+    public List<String> getMonitoringEmail(String query) {
+        List<String> list = new ArrayList<String>();
+        Connection con = getDatabaseConnection();
+
+        try {
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setString(1, "Closed");
+            ResultSet rSet = statement.executeQuery();
+            if (rSet != null) {
+                while(rSet.next()) {
+                    list.add(rSet.getString("c_manager_id"));
+                }
+            } else {
+                queryHandlerInterface.onFailure();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (con != null) {
+                closeDatabaseConnection(con);
+            }
+        }
+        return list;
+    }
+
     public void updateHistoryLog(String uId, String parentId, String userName, String logStatus, String logRemarks) {
         String query = "INSERT INTO app_audit_rss_historyLog (id, appDefId, rowId, loggedBy, logStatus, logRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         Connection con = getDatabaseConnection();
@@ -330,13 +410,17 @@ public class QueryHandler {
                     model.setPicName(rSet.getString("c_pic_name"));
                     model.setTlName(rSet.getString("c_tlName"));
                     if (!rSet.getString("c_int_kpi_status").equalsIgnoreCase("")
-                            || rSet.getString("c_int_kpi_status") != null)
+                            || rSet.getString("c_int_kpi_status") != null) {
                         model.setIntKpiStatus(rSet.getString("c_int_kpi_status"));
-                    else  model.setIntKpiStatus("");
+                    } else {
+                        model.setIntKpiStatus("");
+                    }
                     if (!rSet.getString("c_ext_kpi_status").equalsIgnoreCase("")
-                            || rSet.getString("c_ext_kpi_status") != null) 
+                            || rSet.getString("c_ext_kpi_status") != null) {
                         model.setExtKpiStatus(rSet.getString("c_ext_kpi_status"));
-                    else model.setExtKpiStatus("");
+                    } else {
+                        model.setExtKpiStatus("");
+                    }
                     list.add(model);
                 }
             }
@@ -349,8 +433,8 @@ public class QueryHandler {
         }
         return list;
     }
-    
-    public List<String> getInfo(String query, String month) {    
+
+    public List<String> getInfo(String query, String month) {
         List<String> list = new ArrayList<String>();
         Connection con = getDatabaseConnection();
         try {
