@@ -106,7 +106,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
         // To create Heading
 //        String[] headings = {"KPI Status", "KPI Tasks", "Environment", "Count"};
-        String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "PI"};
+        String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "Construction","Dekon","Emerging","Hotel","Medical","PDD","PI"};
         String[] headings1 = {"KPI Status", "KPI Tasks", "TRAIN USER1 ,FAIZ RASHIDI"};
         String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Meet", "Preparer Delay"};
         String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Meet", "TL Delay"};
@@ -159,10 +159,28 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell1.setCellValue(excelRow.getSubject());
             if (excelRow.getEnv().equalsIgnoreCase("TestEnv")) {
                 Cell cell2 = row.createCell(2);
-                cell2.setCellValue(excelRow.getCount());
-            } else if (excelRow.getEnv().equalsIgnoreCase("PI")) {
+                cell2.setCellValue(excelRow.getTestEnv());
+            } else if (excelRow.getEnv().equalsIgnoreCase("Construction")) {
                 Cell cell3 = row.createCell(3);
-                cell3.setCellValue(excelRow.getCount());
+                cell3.setCellValue(excelRow.getConstruction());
+            }else if (excelRow.getEnv().equalsIgnoreCase("Dekon")) {
+                Cell cell4 = row.createCell(4);
+                cell4.setCellValue(excelRow.getDekon());
+            }else if (excelRow.getEnv().equalsIgnoreCase("Emerging")) {
+                Cell cell5 = row.createCell(5);
+                cell5.setCellValue(excelRow.getEmerging());
+            }else if (excelRow.getEnv().equalsIgnoreCase("Hotel")) {
+                Cell cell6 = row.createCell(6);
+                cell6.setCellValue(excelRow.getHotel());
+            }else if (excelRow.getEnv().equalsIgnoreCase("Medical")) {
+                Cell cell7 = row.createCell(7);
+                cell7.setCellValue(excelRow.getMedical());
+            }else if (excelRow.getEnv().equalsIgnoreCase("PDD")) {
+                Cell cell8 = row.createCell(8);
+                cell8.setCellValue(excelRow.getPDD());
+            }else if (excelRow.getEnv().equalsIgnoreCase("PI")) {
+                Cell cell9 = row.createCell(9);
+                cell9.setCellValue(excelRow.getPI());
             }
             rowCount++;
 //            Cell cell2 = row.getCell(2);
@@ -337,11 +355,56 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
                                 }
                             }
-                            mod.setKpiStatus(intStatus.get(k));
-                            mod.setSubject(subList.get(i));
-                            mod.setEnv(envList.get(j));
-                            mod.setCount(intCount);
+                            for(int s=0;s<excelList.size();s++)
+                            {
+                                if((excelList.get(s).getSubject().equalsIgnoreCase(subList.get(i))) 
+                                        && (excelList.get(s).getKpiStatus().equalsIgnoreCase(intStatus.get(k)))){
+                                    Utils.showMsg("inside same record subject");
+                                    if(envList.get(j).equalsIgnoreCase("TestEnv")){
+                                        excelList.get(s).setTestEnv(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Construction")){
+                                        excelList.get(s).setConstruction(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Dekon")){
+                                        excelList.get(s).setDekon(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Emerging")){
+                                        excelList.get(s).setEmerging(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Hotel")){
+                                        excelList.get(s).setHotel(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Medical")){
+                                        excelList.get(s).setMedical(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("PDD")){
+                                        excelList.get(s).setPDD(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("PI")){
+                                        excelList.get(s).setPI(intCount);
+                                    }
+                                }else{
+                                    Utils.showMsg("inside different record subject");
+                                    if(envList.get(j).equalsIgnoreCase("TestEnv")){
+                                        mod.setTestEnv(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Construction")){
+                                        mod.setConstruction(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Dekon")){
+                                        mod.setDekon(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Emerging")){
+                                        mod.setEmerging(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Hotel")){
+                                        mod.setHotel(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("Medical")){
+                                        mod.setMedical(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("PDD")){
+                                        mod.setPDD(intCount);
+                                    }else if(envList.get(j).equalsIgnoreCase("PI")){
+                                        mod.setPI(intCount);
+                                    }
+                                    mod.setKpiStatus(intStatus.get(k));
+                                    mod.setSubject(subList.get(i));
+                                    mod.setEnv(envList.get(j));
+
+                                }
+                                    
+                            }
                             excelList.add(mod);
+                            
 
                             Utils.showMsg("Internal Count: " + String.valueOf(intCount));
                         }
