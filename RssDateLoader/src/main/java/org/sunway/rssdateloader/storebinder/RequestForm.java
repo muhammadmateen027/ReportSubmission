@@ -52,16 +52,16 @@ public class RequestForm implements QueryHandlerInterface {
 
         if (buttonAction.equalsIgnoreCase("Submit to Manager")) {
 
-            String rev_int_wd = row.getProperty("rev_internal_wd");
-            String rev_int_date = row.getProperty("rev_int_date");
-            String rev_ext_wd = row.getProperty("rev_external_wd");
-            String rev_ext_date = row.getProperty("rev_ext_date");
-
-            row.setProperty("f_int_wd", rev_int_wd);
-            row.setProperty("f_int_date", rev_int_date);
-            row.setProperty("f_ext_wd", rev_ext_wd);
-            row.setProperty("f_ext_date", rev_ext_date);
-
+//            String rev_int_wd = row.getProperty("rev_internal_wd");
+//            String rev_int_date = row.getProperty("rev_int_date");
+//            String rev_ext_wd = row.getProperty("rev_external_wd");
+//            String rev_ext_date = row.getProperty("rev_ext_date");
+//
+//            row.setProperty("f_int_wd", rev_int_wd);
+//            row.setProperty("f_int_date", rev_int_date);
+//            row.setProperty("f_ext_wd", rev_ext_wd);
+//            row.setProperty("f_ext_date", rev_ext_date);
+            row.setProperty("revise_approval_date", "");
             ec.mainReqEmailComposer(revise_status);
             qh.updateHistoryLog(uId, id, current_tl, revise_status, rev_remarks);
         } else {
@@ -76,7 +76,7 @@ public class RequestForm implements QueryHandlerInterface {
         Utils.showMsg("1");
         try {
             kpiStatus = getKpiStatus(int_date);
-            Utils.showMsg("2 : " +kpiStatus);
+            Utils.showMsg("2 : " + kpiStatus);
             row.setProperty("int_kpi_status", kpiStatus);
             Utils.showMsg("3");
         } finally {
@@ -107,7 +107,7 @@ public class RequestForm implements QueryHandlerInterface {
         } catch (ParseException ex) {
             Logger.getLogger(RequestForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Utils.showMsg("Internal KPI Status: "+kpiStatus);
+        Utils.showMsg("Internal KPI Status: " + kpiStatus);
         return kpiStatus;
     }
 

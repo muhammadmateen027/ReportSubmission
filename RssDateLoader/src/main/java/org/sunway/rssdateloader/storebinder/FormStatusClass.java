@@ -48,13 +48,24 @@ public class FormStatusClass implements QueryHandlerInterface {
         EmailClass ec = new EmailClass(formData, rowSet);
         if (mgrAction.equalsIgnoreCase("Approve")) {
             userAction = "Approved";
+            
+            
+            String rev_int_wd = row.getProperty("rev_internal_wd");
+            String rev_int_date = row.getProperty("rev_int_date");
+            String rev_ext_wd = row.getProperty("rev_external_wd");
+            String rev_ext_date = row.getProperty("rev_ext_date");
+
+            row.setProperty("f_int_wd", rev_int_wd);
+            row.setProperty("f_int_date", rev_int_date);
+            row.setProperty("f_ext_wd", rev_ext_wd);
+            row.setProperty("f_ext_date", rev_ext_date);
 
         } else if (mgrAction.equalsIgnoreCase("Reject")) {
             userAction = "Rejected";
-            row.setProperty("rev_internal_wd", "");
-            row.setProperty("rev_external_wd", "");
-            row.setProperty("rev_int_date", "");
-            row.setProperty("rev_ext_date", "");
+//            row.setProperty("rev_internal_wd", "");
+//            row.setProperty("rev_external_wd", "");
+//            row.setProperty("rev_int_date", "");
+//            row.setProperty("rev_ext_date", "");
         }
         row.setProperty("is_revised", "No");
         row.setProperty("revise_status", userAction);
