@@ -388,15 +388,14 @@ public class QueryHandler {
         }
     }
 
-    public List<Model> getKPITasksByMonth(String closeMonth) {
+    public List<Model> getKPITasksByMonth(String query) {
         List<Model> list = new ArrayList<Model>();
-        String query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth from "
-                + "app_fd_rss_request_detail Where c_close_mnth =  ? ";
         Connection con = getDatabaseConnection();
         PreparedStatement stmtInsert;
         try {
             stmtInsert = con.prepareStatement(query);
-            stmtInsert.setString(1, closeMonth);
+            Utils.showMsg("Only query: ==> "+query);
+            Utils.showMsg("Here is query: ==> "+stmtInsert);
             ResultSet rSet = stmtInsert.executeQuery();
 
             if (rSet != null) {

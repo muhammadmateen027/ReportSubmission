@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,11 +93,17 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         String filename = "RSS-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-        Utils.showMsg("0");
         ServletOutputStream outStream;
+
+        //TODO: 
+        String mainQuery = getQuery(request);
         String closingDate = request.getParameter("closingDate");
-        closingDate = "04-2019";
-        List<Model> excelEnvRows = createEnvSheet(closingDate);
+        
+        List<Model> excelEnvRows = createEnvSheet(closingDate, mainQuery);
+//        if (!closingDate.equalsIgnoreCase("") 
+//                && closingDate.equalsIgnoreCase("hell")) {
+//            
+//        }
 //        List<Model> excelMgrRows = createManagerSheet(closingDate);
 //        List<Model> excelPICRows = createPICSheet(closingDate);
 //        List<Model> excelTLRows = createTLSheet(closingDate);
@@ -127,7 +135,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             Cell cell = headingRow.createCell(columnCount);
             cell.setCellValue(col);
             setFontStyle(cell, workbook);
-            sheet.setColumnWidth(columnCount, 9000);
+            sheet.setColumnWidth(columnCount, 5000);
             columnCount++;
         }
         int columnCount1 = 0;
@@ -154,7 +162,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             sheet3.setColumnWidth(columnCount3, 9000);
             columnCount3++;
         }
-        Utils.showMsg("column count done");
         // to create data in sheet rows
         int rowCount = 1;
         for (Model excelRow : excelEnvRows) {
@@ -165,23 +172,24 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell1.setCellValue(excelRow.getSubject());
             Cell cell2 = row.createCell(2);
             cell2.setCellValue(excelRow.getTestEnv());
-            Cell cell4 = row.createCell(4);
+
+            Cell cell4 = row.createCell(3);
             cell4.setCellValue(excelRow.getConstruction());
-            Cell cell5 = row.createCell(5);
+
+            Cell cell5 = row.createCell(4);
             cell5.setCellValue(excelRow.getDekon());
-            Cell cell6 = row.createCell(6);
+            Cell cell6 = row.createCell(5);
             cell6.setCellValue(excelRow.getEmerging());
-            Cell cell7 = row.createCell(7);
+            Cell cell7 = row.createCell(6);
             cell7.setCellValue(excelRow.getHotel());
-            Cell cell8 = row.createCell(8);
+            Cell cell8 = row.createCell(7);
             cell8.setCellValue(excelRow.getMedical());
-            Cell cell9 = row.createCell(9);
+            Cell cell9 = row.createCell(8);
             cell9.setCellValue(excelRow.getPDD());
-            Cell cell10 = row.createCell(10);
+            Cell cell10 = row.createCell(9);
             cell10.setCellValue(excelRow.getPI());
             rowCount++;
         }
-        Utils.showMsg("row count done");
 
         int rowCount1 = 1;
         for (Model excelRow : excelMgrRows) {
@@ -197,7 +205,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                 Cell cell3 = row.createCell(3);
                 cell3.setCellValue(excelRow.getCount());
             }
-            Utils.showMsg("checking---------->" + cell0.toString());
             rowCount1++;
         }
         int rowCount2 = 1;
@@ -224,7 +231,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                 Cell cell7 = row.createCell(7);
                 cell7.setCellValue(excelRow.getCount());
             }
-            Utils.showMsg("checking---------->" + cell0.toString());
             rowCount2++;
         }
         int rowCount3 = 1;
@@ -251,7 +257,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                 Cell cell7 = row.createCell(7);
                 cell7.setCellValue(excelRow.getCount());
             }
-            Utils.showMsg("checking---------->" + cell0.toString());
             rowCount3++;
         }
 
@@ -282,24 +287,75 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return list;
     }
 
-    private List<Model> createEnvSheet(String closingDate) {
-        QueryHandler qh = new QueryHandler(this);
+    private String getQuery(HttpServletRequest request) {
         String query = "";
-        HashMap<String, Model> kpiCount = new HashMap<String, Model>();
+        String closingDate = request.getParameter("closingDate");
+        String subject = request.getParameter("subject");
+        String teamLeader = request.getParameter("teamLeader");
+        String glManager = request.getParameter("glManager");
+        String preparer = request.getParameter("preparer");
+        String period_from = request.getParameter("period_from");
+        String period_to = request.getParameter("period_to");
 
+        String[] array = null;
+        
+
+        
+
+        Utils.showMsg("===>>> Here date is: " + closingDate + " : Subject : " + subject);
+        Utils.showMsg("===>>> teamLeader: " + teamLeader + " : glManager : " + glManager);
+        Utils.showMsg("===>>> preparer: " + preparer);
+        Utils.showMsg("===>>> period_from: " + period_from + " : period_to : " + period_to);
+        
+        
+        query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth, c_manager_name \n"
+                + " from  app_fd_rss_request_detail Where c_close_mnth = '"+closingDate+"' \n";
+        
+        if(!subject.equalsIgnoreCase("none"))
+               query += " AND c_sub_id ='"+subject+"' ";
+        
+        if (!teamLeader.equalsIgnoreCase("none"))
+            query += " AND c_team_leader like '%"+teamLeader+"%' ";
+        
+        if (!glManager.equalsIgnoreCase("none"))
+            query += " AND c_manager_id  like '%"+glManager+"%' "; 
+        
+        if(!subject.equalsIgnoreCase("none"))
+               query += " AND c_username ='"+preparer+"' ";
+        
+        if (!period_from.equalsIgnoreCase("none")) {
+            array = period_from.split("\\-");
+            period_from = array[2] + "-" + array[1] + "-" + array[0];
+            
+            query += " AND c_period_from ='"+period_from+"' ";
+        }
+        
+        if (!period_to.equalsIgnoreCase("none")) {
+            array = period_to.split("\\-");
+            period_to = array[2] + "-" + array[1] + "-" + array[0];
+            
+            query += " AND c_period_to ='"+period_to+"' ";
+        }
+    
+        return query;
+    }
+
+    private List<Model> createEnvSheet(String closingDate, String query) {
+        QueryHandler qh = new QueryHandler(this);
+        HashMap<String, Model> kpiCount = new HashMap<String, Model>();
+        String mQuery = "";
         List<String> intStatus = getStatus("internal");
         List<String> extStatus = getStatus("external");
         List<Model> excelList = new ArrayList<Model>();
         Collection<Model> values;
 
         if (!closingDate.equalsIgnoreCase("")) {
-            query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(query, closingDate);
-            Utils.showMsg("a");
-            query = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            envList = qh.getInfo(query, closingDate);
-            Utils.showMsg("b");
-            List<Model> actualData = qh.getKPITasksByMonth(closingDate);
+            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
+            subList = qh.getInfo(mQuery, closingDate);
+            mQuery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            envList = qh.getInfo(mQuery, closingDate);
+            
+            List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
                 for (int i = 0; i < subList.size(); i++) {
                     for (int j = 0; j < envList.size(); j++) {
@@ -309,8 +365,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                             for (int l = 0; l < actualData.size(); l++) {
                                 if (actualData.get(l).getEnv().equalsIgnoreCase(envList.get(j))) {
                                     if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
-                                        Utils.showMsg(actualData.get(l).getIntKpiStatus());
-                                        Utils.showMsg(intStatus.get(k));
                                         if (actualData.get(l).getIntKpiStatus().equalsIgnoreCase(intStatus.get(k))) {
                                             intCount++;
 
@@ -322,9 +376,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                             mod.setKpiStatus(intStatus.get(k));
                             mod.setSubject(subList.get(i));
                             mod.setEnv(envList.get(j));
-//                            excelList.add(mod);
                             if (kpiCount.containsKey(intStatus.get(k) + subList.get(i))) {
-                                Utils.showMsg("==>>> If: Inside Map");
                                 mod = (Model) kpiCount.get(intStatus.get(k) + subList.get(i));
 
                                 if (envList.get(j).equalsIgnoreCase("TestEnv")) {
@@ -345,7 +397,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                     mod.setPI(intCount);
                                 }
                             } else {
-                                Utils.showMsg("==>>> else: Inside Map");
                                 if (envList.get(j).equalsIgnoreCase("TestEnv")) {
                                     mod.setTestEnv(intCount);
                                 } else if (envList.get(j).equalsIgnoreCase("Construction")) {
@@ -363,89 +414,72 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                 } else if (envList.get(j).equalsIgnoreCase("PI")) {
                                     mod.setPI(intCount);
                                 }
-                                kpiCount.put(intStatus.get(k) + subList.get(i), mod);
-//                                mod = new Model();
+                                if (intCount != 0) {
+                                    kpiCount.put(intStatus.get(k) + subList.get(i), mod);
+                                }
                             }
-                            Utils.showMsg("===> " + String.valueOf(kpiCount.size()) + " : " + kpiCount.toString());
-//                            values = kpiCount.values();
-//                            excelList.add((Model) kpiCount.values());
-                            Utils.showMsg("Internal Count: " + String.valueOf(intCount));
                         }
 
-//                        for (int m = 0; m < extStatus.size(); m++) {
-//                            Model mod = new Model();
-//                            Utils.showMsg("33");
-//                            int extCount = 0;
-//                            for (int l = 0; l < actualData.size(); l++) {
-//                                Utils.showMsg("44");
-//                                if (actualData.get(l).getEnv().equalsIgnoreCase(envList.get(j))) {
-//                                    Utils.showMsg("55");
-//                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
-//                                        Utils.showMsg("66");
-//                                        Utils.showMsg(actualData.get(l).getExtKpiStatus());
-//                                        Utils.showMsg(extStatus.get(m));
-//                                        if (actualData.get(l).getExtKpiStatus().equalsIgnoreCase(extStatus.get(m))) {
-//                                            Utils.showMsg("77");
-//                                            extCount++;
-//                                            Utils.showMsg("Subj: " + actualData.get(l).getSubject()
-//                                                    + "Env: " + actualData.get(l).getEnv()
-//                                                    + " External: " + extStatus.get(m) + " : count: " + String.valueOf(extCount));
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//
-//                             mod.setKpiStatus(extStatus.get(m));
-//                            mod.setSubject(subList.get(i));
-//                            mod.setEnv(envList.get(j));
-////                            excelList.add(mod);
-//                            if (kpiCount.containsKey(extStatus.get(m) + subList.get(i))) {
-//                                mod = (Model) kpiCount.get(extStatus.get(m) + subList.get(i));
-//                                if (envList.get(j).equalsIgnoreCase("TestEnv")) {
-//                                    mod.setTestEnv(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Dekon")) {
-//                                    mod.setDekon(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Emerging")) {
-//                                    mod.setEmerging(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Hotel")) {
-//                                    mod.setHotel(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Medical")) {
-//                                    mod.setMedical(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("PDD")) {
-//                                    mod.setPDD(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("PI")) {
-//                                    mod.setPI(extCount);
-//                                }
-//                            } else {
-//                                if (envList.get(j).equalsIgnoreCase("TestEnv")) {
-//                                    mod.setTestEnv(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Dekon")) {
-//                                    mod.setDekon(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Emerging")) {
-//                                    mod.setEmerging(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Hotel")) {
-//                                    mod.setHotel(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("Medical")) {
-//                                    mod.setMedical(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("PDD")) {
-//                                    mod.setPDD(extCount);
-//                                } else if (envList.get(j).equalsIgnoreCase("PI")) {
-//                                    mod.setPI(extCount);
-//                                }
-//                                kpiCount.put(extStatus.get(m) + subList.get(i), mod);
-////                                mod = new Model();
-//                            }
-//                            excelList.add((Model) kpiCount.values());
-//                            Utils.showMsg("External Count: " + String.valueOf(extCount));
-//
-//                        }
-//                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-//                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
+                        for (int m = 0; m < extStatus.size(); m++) {
+                            Model mod = new Model();
+                            int extCount = 0;
+                            for (int l = 0; l < actualData.size(); l++) {
+                                if (actualData.get(l).getEnv().equalsIgnoreCase(envList.get(j))) {
+                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
+                                        if (actualData.get(l).getExtKpiStatus().equalsIgnoreCase(extStatus.get(m))) {
+                                            extCount++;
+                                        }
+                                    }
+
+                                }
+                            }
+
+                            mod.setKpiStatus(extStatus.get(m));
+                            mod.setSubject(subList.get(i));
+                            mod.setEnv(envList.get(j));
+                            if (kpiCount.containsKey(extStatus.get(m) + subList.get(i))) {
+                                mod = (Model) kpiCount.get(extStatus.get(m) + subList.get(i));
+                                if (envList.get(j).equalsIgnoreCase("TestEnv")) {
+                                    mod.setTestEnv(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Construction")) {
+                                    mod.setConstruction(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Dekon")) {
+                                    mod.setDekon(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Emerging")) {
+                                    mod.setEmerging(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Hotel")) {
+                                    mod.setHotel(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Medical")) {
+                                    mod.setMedical(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("PDD")) {
+                                    mod.setPDD(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("PI")) {
+                                    mod.setPI(extCount);
+                                }
+                            } else {
+                                if (envList.get(j).equalsIgnoreCase("TestEnv")) {
+                                    mod.setTestEnv(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Construction")) {
+                                    mod.setConstruction(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Dekon")) {
+                                    mod.setDekon(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Emerging")) {
+                                    mod.setEmerging(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Hotel")) {
+                                    mod.setHotel(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("Medical")) {
+                                    mod.setMedical(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("PDD")) {
+                                    mod.setPDD(extCount);
+                                } else if (envList.get(j).equalsIgnoreCase("PI")) {
+                                    mod.setPI(extCount);
+                                }
+                                if (extCount != 0) {
+                                    kpiCount.put(extStatus.get(m) + subList.get(i), mod);
+                                }
+                            }
+
+                        }
                     }
 
                 }
@@ -457,6 +491,11 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         for (Model url : kpiCount.values()) {
             excelList.add(url);
         }
+        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getKpiStatus().compareTo(o2.getKpiStatus());
+        Collections.sort(excelList, compareById);
+
+//        compareById = (Model o1, Model o2) -> o1.getSubject().compareTo( o2.getSubject());
+//        Collections.sort(excelList, compareById);
         return excelList;
     }
 
