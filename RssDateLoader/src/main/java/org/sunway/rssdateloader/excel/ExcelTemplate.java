@@ -98,19 +98,15 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         //TODO: 
         String mainQuery = getQuery(request);
         String closingDate = request.getParameter("closingDate");
-        
-        List<Model> excelEnvRows = createEnvSheet(closingDate, mainQuery);
+
 //        if (!closingDate.equalsIgnoreCase("") 
 //                && closingDate.equalsIgnoreCase("hell")) {
 //            
-//        }
-//        List<Model> excelMgrRows = createManagerSheet(closingDate);
-//        List<Model> excelPICRows = createPICSheet(closingDate);
-//        List<Model> excelTLRows = createTLSheet(closingDate);
-
-        List<Model> excelMgrRows = new ArrayList<Model>();
-        List<Model> excelPICRows = new ArrayList<Model>();
-        List<Model> excelTLRows = new ArrayList<Model>();
+//        }        
+        List<Model> excelEnvRows = createEnvSheet(closingDate, mainQuery);
+        List<Model> excelMgrRows = createManagerSheet(closingDate, mainQuery);
+        List<Model> excelPICRows = createPICSheet(closingDate, mainQuery);
+        List<Model> excelTLRows = createTLSheet(closingDate, mainQuery);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("By Environment");
@@ -122,8 +118,8 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 //        String[] headings = {"KPI Status", "KPI Tasks", "Environment", "Count"};
         String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "Construction", "Dekon", "Emerging", "Hotel", "Medical", "PDD", "PI"};
         String[] headings1 = {"KPI Status", "KPI Tasks", "TRAIN USER1 ,FAIZ RASHIDI"};
-        String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Meet", "Preparer Delay"};
-        String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Meet", "TL Delay"};
+        String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Delay","Preparer Meet"};
+        String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Delay", "TL Meet"};
 
         Row headingRow = sheet.createRow(0);
         Row headingRow1 = sheet1.createRow(0);
@@ -172,22 +168,20 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell1.setCellValue(excelRow.getSubject());
             Cell cell2 = row.createCell(2);
             cell2.setCellValue(excelRow.getTestEnv());
-
-            Cell cell4 = row.createCell(3);
-            cell4.setCellValue(excelRow.getConstruction());
-
-            Cell cell5 = row.createCell(4);
-            cell5.setCellValue(excelRow.getDekon());
-            Cell cell6 = row.createCell(5);
-            cell6.setCellValue(excelRow.getEmerging());
-            Cell cell7 = row.createCell(6);
-            cell7.setCellValue(excelRow.getHotel());
-            Cell cell8 = row.createCell(7);
-            cell8.setCellValue(excelRow.getMedical());
-            Cell cell9 = row.createCell(8);
-            cell9.setCellValue(excelRow.getPDD());
-            Cell cell10 = row.createCell(9);
-            cell10.setCellValue(excelRow.getPI());
+            Cell cell3 = row.createCell(3);
+            cell3.setCellValue(excelRow.getConstruction());
+            Cell cell4 = row.createCell(4);
+            cell4.setCellValue(excelRow.getDekon());
+            Cell cell5 = row.createCell(5);
+            cell5.setCellValue(excelRow.getEmerging());
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(excelRow.getHotel());
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(excelRow.getMedical());
+            Cell cell8 = row.createCell(8);
+            cell8.setCellValue(excelRow.getPDD());
+            Cell cell9 = row.createCell(9);
+            cell9.setCellValue(excelRow.getPI());
             rowCount++;
         }
 
@@ -201,10 +195,11 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             if (excelRow.getManager().equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
                 Cell cell2 = row.createCell(2);
                 cell2.setCellValue(excelRow.getCount());
-            } else if (excelRow.getEnv().equalsIgnoreCase("PI")) {
-                Cell cell3 = row.createCell(3);
-                cell3.setCellValue(excelRow.getCount());
-            }
+            } 
+//            else if (excelRow.getEnv().equalsIgnoreCase("PI")) {
+//                Cell cell3 = row.createCell(3);
+//                cell3.setCellValue(excelRow.getCount());
+//            }
             rowCount1++;
         }
         int rowCount2 = 1;
@@ -220,17 +215,12 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell3.setCellValue(excelRow.getManager());
             Cell cell4 = row.createCell(4);
             cell4.setCellValue(excelRow.getSubject());
-
-            if (excelRow.getKpiStatus().equalsIgnoreCase("Preparer Exceed")) {
-                Cell cell5 = row.createCell(5);
-                cell5.setCellValue(excelRow.getCount());
-            } else if (excelRow.getKpiStatus().equalsIgnoreCase("Preparer Meet")) {
-                Cell cell6 = row.createCell(6);
-                cell6.setCellValue(excelRow.getCount());
-            } else if (excelRow.getKpiStatus().equalsIgnoreCase("Preparer Delay")) {
-                Cell cell7 = row.createCell(7);
-                cell7.setCellValue(excelRow.getCount());
-            }
+            Cell cell5 = row.createCell(5);
+            cell5.setCellValue(excelRow.getPreExceed());
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(excelRow.getPreDelay());
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(excelRow.getPreMeet());
             rowCount2++;
         }
         int rowCount3 = 1;
@@ -246,17 +236,12 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell3.setCellValue(excelRow.getManager());
             Cell cell4 = row.createCell(4);
             cell4.setCellValue(excelRow.getSubject());
-
-            if (excelRow.getKpiStatus().equalsIgnoreCase("TL Exceed")) {
-                Cell cell5 = row.createCell(5);
-                cell5.setCellValue(excelRow.getCount());
-            } else if (excelRow.getKpiStatus().equalsIgnoreCase("TL Meet")) {
-                Cell cell6 = row.createCell(6);
-                cell6.setCellValue(excelRow.getCount());
-            } else if (excelRow.getKpiStatus().equalsIgnoreCase("TL Delay")) {
-                Cell cell7 = row.createCell(7);
-                cell7.setCellValue(excelRow.getCount());
-            }
+            Cell cell5 = row.createCell(5);
+            cell5.setCellValue(excelRow.getTlExceed());
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(excelRow.getTlDelay());
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(excelRow.getTlMeet());
             rowCount3++;
         }
 
@@ -298,45 +283,45 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         String period_to = request.getParameter("period_to");
 
         String[] array = null;
-        
-
-        
 
         Utils.showMsg("===>>> Here date is: " + closingDate + " : Subject : " + subject);
         Utils.showMsg("===>>> teamLeader: " + teamLeader + " : glManager : " + glManager);
         Utils.showMsg("===>>> preparer: " + preparer);
         Utils.showMsg("===>>> period_from: " + period_from + " : period_to : " + period_to);
-        
-        
+
         query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth, c_manager_name \n"
-                + " from  app_fd_rss_request_detail Where c_close_mnth = '"+closingDate+"' \n";
-        
-        if(!subject.equalsIgnoreCase("none"))
-               query += " AND c_sub_id ='"+subject+"' ";
-        
-        if (!teamLeader.equalsIgnoreCase("none"))
-            query += " AND c_team_leader like '%"+teamLeader+"%' ";
-        
-        if (!glManager.equalsIgnoreCase("none"))
-            query += " AND c_manager_id  like '%"+glManager+"%' "; 
-        
-        if(!subject.equalsIgnoreCase("none"))
-               query += " AND c_username ='"+preparer+"' ";
-        
+                + " from  app_fd_rss_request_detail Where c_close_mnth = '" + closingDate + "' \n";
+
+        if (!subject.equalsIgnoreCase("none")) {
+            query += " AND c_sub_id ='" + subject + "' ";
+        }
+
+        if (!teamLeader.equalsIgnoreCase("none")) {
+            query += " AND c_team_leader like '%" + teamLeader + "%' ";
+        }
+
+        if (!glManager.equalsIgnoreCase("none")) {
+            query += " AND c_manager_id  like '%" + glManager + "%' ";
+        }
+
+        if (!preparer.equalsIgnoreCase("none")) {
+            query += " AND c_username ='" + preparer + "' ";
+        }
+
         if (!period_from.equalsIgnoreCase("none")) {
             array = period_from.split("\\-");
             period_from = array[2] + "-" + array[1] + "-" + array[0];
-            
-            query += " AND c_period_from ='"+period_from+"' ";
+
+            query += " AND c_period_from ='" + period_from + "' ";
         }
-        
+
         if (!period_to.equalsIgnoreCase("none")) {
             array = period_to.split("\\-");
             period_to = array[2] + "-" + array[1] + "-" + array[0];
-            
-            query += " AND c_period_to ='"+period_to+"' ";
+
+            query += " AND c_period_to ='" + period_to + "' ";
         }
-    
+
         return query;
     }
 
@@ -347,14 +332,13 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         List<String> intStatus = getStatus("internal");
         List<String> extStatus = getStatus("external");
         List<Model> excelList = new ArrayList<Model>();
-        Collection<Model> values;
 
         if (!closingDate.equalsIgnoreCase("")) {
             mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
             subList = qh.getInfo(mQuery, closingDate);
             mQuery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
             envList = qh.getInfo(mQuery, closingDate);
-            
+
             List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
                 for (int i = 0; i < subList.size(); i++) {
@@ -500,274 +484,360 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     }
 
 //    //filter by manager
-//    private List<Model> createManagerSheet(String closingDate) {
-//        QueryHandler qh = new QueryHandler(this);
-//        String query = "";
-//        Utils.showMsg("------------->Inside manager");
-//        List<String> intStatus = getStatus("internal");
-//        List<String> extStatus = getStatus("external");
-//        List<Model> excelList = new ArrayList<Model>();
-//
-//        if (!closingDate.equalsIgnoreCase("")) {
-//            query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-//            subList = qh.getInfo(query, closingDate);
-//            Utils.showMsg("a");
-//            query = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            mgrList = qh.getInfo(query, closingDate);
-//            Utils.showMsg("b");
-//            List<Model> actualData = qh.getKPITasksByMonth(closingDate);
-//            Utils.showMsg("c");
-//            if (!actualData.isEmpty()) {
-//                for (int i = 0; i < subList.size(); i++) {
-//                    Utils.showMsg("1");
-//                    for (int j = 0; j < mgrList.size(); j++) {
-//                        Utils.showMsg("2");
-//                        for (int k = 0; k < intStatus.size(); k++) {
-//                            Utils.showMsg("3");
-//                            int intCount = 0;
-//                            Model mod = new Model();
-//                            for (int l = 0; l < actualData.size(); l++) {
-//                                Utils.showMsg("4");
-//                                if (actualData.get(l).getManager().equalsIgnoreCase(mgrList.get(j))) {
-//                                    Utils.showMsg("5");
-//                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
-//                                        Utils.showMsg("6");
-//                                        Utils.showMsg(actualData.get(l).getIntKpiStatus());
-//                                        Utils.showMsg(intStatus.get(k));
-//                                        if (actualData.get(l).getIntKpiStatus().equalsIgnoreCase(intStatus.get(k))) {
-//                                            Utils.showMsg("7");
-//                                            intCount++;
-//                                            Utils.showMsg("Subj: " + actualData.get(l).getSubject()
-//                                                    + "Env: " + actualData.get(l).getManager()
-//                                                    + " Internal: " + intStatus.get(k) + " : count: " + String.valueOf(intCount));
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//                            mod.setKpiStatus(intStatus.get(k));
-//                            mod.setSubject(subList.get(i));
-//                            mod.setManager(mgrList.get(j));
-//                            mod.setCount(intCount);
-//                            excelList.add(mod);
-//
-//                            Utils.showMsg("Internal Count: " + String.valueOf(intCount));
-//                        }
-//                        for (int m = 0; m < extStatus.size(); m++) {
-//                            Utils.showMsg("33");
-//                            int extCount = 0;
-//                            Model mod = new Model();
-//                            for (int l = 0; l < actualData.size(); l++) {
-//                                Utils.showMsg("44");
-//                                if (actualData.get(l).getManager().equalsIgnoreCase(mgrList.get(j))) {
-//                                    Utils.showMsg("55");
-//                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
-//                                        Utils.showMsg("66");
-//                                        Utils.showMsg(actualData.get(l).getExtKpiStatus());
-//                                        Utils.showMsg(extStatus.get(m));
-//                                        if (actualData.get(l).getExtKpiStatus().equalsIgnoreCase(extStatus.get(m))) {
-//                                            Utils.showMsg("77");
-//                                            extCount++;
-//                                            Utils.showMsg("Subj: " + actualData.get(l).getSubject()
-//                                                    + "Env: " + actualData.get(l).getManager()
-//                                                    + " External: " + extStatus.get(m) + " : count: " + String.valueOf(extCount));
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//                            mod.setKpiStatus(extStatus.get(m));
-//                            mod.setSubject(subList.get(i));
-//                            mod.setManager(mgrList.get(j));
-//                            mod.setCount(extCount);
-//                            excelList.add(mod);
-//
-//                            Utils.showMsg("External Count: " + String.valueOf(extCount));
-//
-//                        }
-////                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-////                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
-//                    }
-//
-//                }
-//            } else {
-//                Utils.showMsg("Helllooo ");
-//            }
-//        }
-//        return excelList;
-//    }
-//
-//    private List<Model> createPICSheet(String closingDate) {
-//        QueryHandler qh = new QueryHandler(this);
-//        String query = "";
-//
-//        List<String> intStatus = getStatus("internal");
-//        List<Model> excelList = new ArrayList<Model>();
-//
-//        if (!closingDate.equalsIgnoreCase("")) {
-//            query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-//            subList = qh.getInfo(query, closingDate);
-//            Utils.showMsg("a");
-//            query = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            envList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            companyList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_pic_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            picList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            mgrList = qh.getInfo(query, closingDate);
-//
-//            Utils.showMsg("b");
-//            List<Model> actualData = qh.getKPITasksByMonth(closingDate);
-//            Utils.showMsg("c");
-//            if (!actualData.isEmpty()) {
-//                for (int i = 0; i < subList.size(); i++) {
-//                    Utils.showMsg("1");
-//                    for (int j = 0; j < envList.size(); j++) {
-//                        Utils.showMsg("2");
-//                        for (int k = 0; k < mgrList.size(); k++) {
-//                            for (int l = 0; l < companyList.size(); l++) {
-//                                for (int m = 0; m < picList.size(); m++) {
-//                                    Utils.showMsg("before status check");
-//                                    for (int n = 0; n < intStatus.size(); n++) {
-//                                        Utils.showMsg("3");
-//                                        int intCount = 0;
-//                                        Model mod = new Model();
-//                                        for (int p = 0; p < actualData.size(); p++) {
-//                                            Utils.showMsg("4");
-//                                            if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
-//                                                Utils.showMsg("5");
-//                                                if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
-//                                                    if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
-//                                                        if (actualData.get(p).getPicName().equalsIgnoreCase(picList.get(m))) {
-//                                                            if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
-//                                                                Utils.showMsg("6");
-//                                                                Utils.showMsg(actualData.get(p).getIntKpiStatus());
-//                                                                Utils.showMsg(intStatus.get(n));
-//                                                                if (actualData.get(p).getIntKpiStatus().equalsIgnoreCase(intStatus.get(n))) {
-//                                                                    Utils.showMsg("7");
-//                                                                    intCount++;
-//                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
-//                                                                            + "Env: " + actualData.get(p).getEnv()
-//                                                                            + " Internal: " + intStatus.get(n) + " : count: " + String.valueOf(intCount));
-//                                                                }
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }//
-//                                            }
-//                                        }
-//                                        mod.setKpiStatus(intStatus.get(n));
-//                                        mod.setSubject(subList.get(i));
-//                                        mod.setEnv(envList.get(j));
-//                                        mod.setCount(intCount);
-//                                        mod.setManager(mgrList.get(k));
-//                                        mod.setPicName(picList.get(m));
-//                                        mod.setCompany(companyList.get(l));
-//                                        excelList.add(mod);
-//
-//                                        Utils.showMsg("Internal Count: " + String.valueOf(intCount));
-//                                    }
-////                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-////                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
-//                                }
-//                            }
-//                        }
-//                    }//sub
-//
-//                }
-//            } else {
-//                Utils.showMsg("Helllooo ");
-//            }
-//        }
-//        return excelList;
-//    }
-//
-//    private List<Model> createTLSheet(String closingDate) {
-//        QueryHandler qh = new QueryHandler(this);
-//        String query = "";
-//
-//        List<String> extStatus = getStatus("external");
-//        List<Model> excelList = new ArrayList<Model>();
-//
-//        if (!closingDate.equalsIgnoreCase("")) {
-//            query = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-//            subList = qh.getInfo(query, closingDate);
-//            Utils.showMsg("a");
-//            query = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            envList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            companyList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_tlName as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            tlList = qh.getInfo(query, closingDate);
-//            query = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-//            mgrList = qh.getInfo(query, closingDate);
-//
-//            Utils.showMsg("b");
-//            List<Model> actualData = qh.getKPITasksByMonth(closingDate);
-//            Utils.showMsg("c");
-//            if (!actualData.isEmpty()) {
-//                for (int i = 0; i < subList.size(); i++) {
-//                    Utils.showMsg("1");
-//                    for (int j = 0; j < envList.size(); j++) {
-//                        Utils.showMsg("2");
-//                        for (int k = 0; k < mgrList.size(); k++) {
-//                            for (int l = 0; l < companyList.size(); l++) {
-//                                for (int m = 0; m < tlList.size(); m++) {
-//                                    Utils.showMsg("before status check");
-//                                    for (int n = 0; n < extStatus.size(); n++) {
-//                                        Utils.showMsg("3");
-//                                        int extCount = 0;
-//                                        Model mod = new Model();
-//                                        for (int p = 0; p < actualData.size(); p++) {
-//                                            Utils.showMsg("4");
-//                                            if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
-//                                                Utils.showMsg("5");
-//                                                if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
-//                                                    if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
-//                                                        if (actualData.get(p).getTlName().equalsIgnoreCase(tlList.get(m))) {
-//                                                            if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
-//                                                                Utils.showMsg("6");
-//                                                                Utils.showMsg(actualData.get(p).getExtKpiStatus());
-//                                                                Utils.showMsg(extStatus.get(n));
-//                                                                if (actualData.get(p).getExtKpiStatus().equalsIgnoreCase(extStatus.get(n))) {
-//                                                                    Utils.showMsg("7");
-//                                                                    extCount++;
-//                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
-//                                                                            + "Env: " + actualData.get(p).getEnv()
-//                                                                            + " Internal: " + extStatus.get(n) + " : count: " + String.valueOf(extCount));
-//                                                                }
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }//
-//                                            }
-//                                        }
-//                                        mod.setKpiStatus(extStatus.get(n));
-//                                        mod.setSubject(subList.get(i));
-//                                        mod.setEnv(envList.get(j));
-//                                        mod.setCount(extCount);
-//                                        mod.setManager(mgrList.get(k));
-//                                        mod.setTlName(tlList.get(m));
-//                                        mod.setCompany(companyList.get(l));
-//                                        excelList.add(mod);
-//
-//                                        Utils.showMsg("Internal Count: " + String.valueOf(extCount));
-//                                    }
-////                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-////                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
-//                                }
-//                            }
-//                        }
-//                    }//sub
-//
-//                }
-//            } else {
-//                Utils.showMsg("Helllooo ");
-//            }
-//        }
-//        return excelList;
-//    }
+    private List<Model> createManagerSheet(String closingDate, String query) {
+        QueryHandler qh = new QueryHandler(this);
+        HashMap<String, Model> kpiCount = new HashMap<String, Model>();
+        String mQuery = "";
+        Utils.showMsg("------------->Inside manager");
+        List<String> intStatus = getStatus("internal");
+        List<String> extStatus = getStatus("external");
+        List<Model> excelList = new ArrayList<Model>();
+
+        if (!closingDate.equalsIgnoreCase("")) {
+            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
+            subList = qh.getInfo(mQuery, closingDate);
+            Utils.showMsg("a");
+            mQuery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            mgrList = qh.getInfo(mQuery, closingDate);
+            Utils.showMsg("b");
+            List<Model> actualData = qh.getKPITasksByMonth(query);
+            Utils.showMsg("c");
+            if (!actualData.isEmpty()) {
+                for (int i = 0; i < subList.size(); i++) {
+                    Utils.showMsg("1");
+                    for (int j = 0; j < mgrList.size(); j++) {
+                        Utils.showMsg("2");
+                        for (int k = 0; k < intStatus.size(); k++) {
+                            Utils.showMsg("3");
+                            int intCount = 0;
+                            Model mod = new Model();
+                            for (int l = 0; l < actualData.size(); l++) {
+                                Utils.showMsg("4");
+                                if (actualData.get(l).getManager().equalsIgnoreCase(mgrList.get(j))) {
+                                    Utils.showMsg("5");
+                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
+                                        Utils.showMsg("6");
+                                        Utils.showMsg(actualData.get(l).getIntKpiStatus());
+                                        Utils.showMsg(intStatus.get(k));
+                                        if (actualData.get(l).getIntKpiStatus().equalsIgnoreCase(intStatus.get(k))) {
+                                            Utils.showMsg("7");
+                                            intCount++;
+                                            Utils.showMsg("Subj: " + actualData.get(l).getSubject()
+                                                    + "Env: " + actualData.get(l).getManager()
+                                                    + " Internal: " + intStatus.get(k) + " : count: " + String.valueOf(intCount));
+                                        }
+                                    }
+
+                                }
+                            }
+                            mod.setKpiStatus(intStatus.get(k));
+                            mod.setSubject(subList.get(i));
+                            mod.setManager(mgrList.get(j));
+                            if (kpiCount.containsKey(intStatus.get(k) + subList.get(i))) {
+                                mod = (Model) kpiCount.get(intStatus.get(k) + subList.get(i));
+
+                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
+                                    mod.setCount(intCount);
+                                } 
+//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
+//                                    mod.setConstruction(intCount);
+//                                } 
+                            } else {
+                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
+                                    mod.setCount(intCount);
+                                } 
+//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
+//                                    mod.setConstruction(intCount);
+//                                } 
+                                if (intCount != 0) {
+                                    kpiCount.put(intStatus.get(k) + subList.get(i), mod);
+                                }
+                            }
+                        }
+                        for (int m = 0; m < extStatus.size(); m++) {
+                            Utils.showMsg("33");
+                            int extCount = 0;
+                            Model mod = new Model();
+                            for (int l = 0; l < actualData.size(); l++) {
+                                Utils.showMsg("44");
+                                if (actualData.get(l).getManager().equalsIgnoreCase(mgrList.get(j))) {
+                                    Utils.showMsg("55");
+                                    if (actualData.get(l).getSubject().equalsIgnoreCase(subList.get(i))) {
+                                        Utils.showMsg("66");
+                                        Utils.showMsg(actualData.get(l).getExtKpiStatus());
+                                        Utils.showMsg(extStatus.get(m));
+                                        if (actualData.get(l).getExtKpiStatus().equalsIgnoreCase(extStatus.get(m))) {
+                                            Utils.showMsg("77");
+                                            extCount++;
+                                            Utils.showMsg("Subj: " + actualData.get(l).getSubject()
+                                                    + "Env: " + actualData.get(l).getManager()
+                                                    + " External: " + extStatus.get(m) + " : count: " + String.valueOf(extCount));
+                                        }
+                                    }
+
+                                }
+                            }
+                            mod.setKpiStatus(extStatus.get(m));
+                            mod.setSubject(subList.get(i));
+                            mod.setManager(mgrList.get(j));
+                            if (kpiCount.containsKey(extStatus.get(m) + subList.get(i))) {
+                                mod = (Model) kpiCount.get(extStatus.get(m) + subList.get(i));
+                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
+                                    mod.setCount(extCount);
+                                } 
+//                                    else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
+//                                    mod.setConstruction(extCount);
+//                                } 
+                            } else {
+                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
+                                    mod.setCount(extCount);
+                                } 
+//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
+//                                    mod.setConstruction(extCount);
+//                                } 
+                                if (extCount != 0) {
+                                    kpiCount.put(extStatus.get(m) + subList.get(i), mod);
+                                }
+                            }
+
+                        }
+//                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
+//                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
+                    }
+
+                }
+            } else {
+                Utils.showMsg("Helllooo ");
+            }
+        }
+        for (Model url : kpiCount.values()) {
+            excelList.add(url);
+        }
+        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getKpiStatus().compareTo(o2.getKpiStatus());
+        Collections.sort(excelList, compareById);
+        return excelList;
+    }
+
+    private List<Model> createPICSheet(String closingDate, String query) {
+        QueryHandler qh = new QueryHandler(this);
+        String mquery = "";
+        HashMap<String, Model> kpiCount = new HashMap<String, Model>();
+        List<String> intStatus = getStatus("internal");
+        List<Model> excelList = new ArrayList<Model>();
+
+        if (!closingDate.equalsIgnoreCase("")) {
+            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
+            subList = qh.getInfo(mquery, closingDate);
+            Utils.showMsg("a");
+            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            envList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            companyList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_pic_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            picList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            mgrList = qh.getInfo(mquery, closingDate);
+
+            Utils.showMsg("b");
+            List<Model> actualData = qh.getKPITasksByMonth(query);
+            Utils.showMsg("c");
+            if (!actualData.isEmpty()) {
+                for (int i = 0; i < subList.size(); i++) {
+                    Utils.showMsg("1");
+                    for (int j = 0; j < envList.size(); j++) {
+                        Utils.showMsg("2");
+                        for (int k = 0; k < mgrList.size(); k++) {
+                            for (int l = 0; l < companyList.size(); l++) {
+                                for (int m = 0; m < picList.size(); m++) {
+                                    Utils.showMsg("before status check");
+                                    for (int n = 0; n < intStatus.size(); n++) {
+                                        Utils.showMsg("3");
+                                        int intCount = 0;
+                                        Model mod = new Model();
+                                        for (int p = 0; p < actualData.size(); p++) {
+                                            Utils.showMsg("4");
+                                            if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
+                                                Utils.showMsg("5");
+                                                if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
+                                                    if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
+                                                        if (actualData.get(p).getPicName().equalsIgnoreCase(picList.get(m))) {
+                                                            if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
+                                                                Utils.showMsg("6");
+                                                                Utils.showMsg(actualData.get(p).getIntKpiStatus());
+                                                                Utils.showMsg(intStatus.get(n));
+                                                                if (actualData.get(p).getIntKpiStatus().equalsIgnoreCase(intStatus.get(n))) {
+                                                                    Utils.showMsg("7");
+                                                                    intCount++;
+                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
+                                                                            + "Env: " + actualData.get(p).getEnv()
+                                                                            + " Internal: " + intStatus.get(n) + " : count: " + String.valueOf(intCount));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        mod.setKpiStatus(intStatus.get(n));
+                                        mod.setSubject(subList.get(i));
+                                        mod.setEnv(envList.get(j));
+                                        mod.setManager(mgrList.get(k));
+                                        mod.setPicName(picList.get(m));
+                                        mod.setCompany(companyList.get(l));
+                                        
+                                        if (kpiCount.containsKey(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l))) {
+                                            mod = (Model) kpiCount.get(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l));
+
+                                            if (intStatus.get(n).equalsIgnoreCase("Preparer Exceed")) {
+                                                mod.setPreExceed(intCount);
+                                            } else if (intStatus.get(n).equalsIgnoreCase("Preparer Delay")) {
+                                                mod.setPreDelay(intCount);
+                                            } else if (intStatus.get(n).equalsIgnoreCase("Preparer Meet")) {
+                                                mod.setPreMeet(intCount);
+                                            } 
+                                        } else {
+                                            if (intStatus.get(n).equalsIgnoreCase("Preparer Exceed")) {
+                                                mod.setPreExceed(intCount);
+                                            } else if (intStatus.get(n).equalsIgnoreCase("Preparer Delay")) {
+                                                mod.setPreDelay(intCount);
+                                            } else if (intStatus.get(n).equalsIgnoreCase("Preparer Meet")) {
+                                                mod.setPreMeet(intCount);
+                                            } 
+                                            if (intCount != 0) {
+                                                kpiCount.put(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l), mod);
+                                            }
+                                        }
+
+                                        Utils.showMsg("Internal Count: " + String.valueOf(intCount));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                Utils.showMsg("Helllooo ");
+            }
+        }
+        for (Model url : kpiCount.values()) {
+            excelList.add(url);
+        }
+        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getSubject().compareTo(o2.getSubject());
+        Collections.sort(excelList, compareById);
+        return excelList;
+    }
+
+    private List<Model> createTLSheet(String closingDate, String query) {
+        QueryHandler qh = new QueryHandler(this);
+        String mquery = "";
+        HashMap<String, Model> kpiCount = new HashMap<String, Model>();
+        List<String> extStatus = getStatus("external");
+        List<Model> excelList = new ArrayList<Model>();
+
+        if (!closingDate.equalsIgnoreCase("")) {
+            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
+            subList = qh.getInfo(mquery, closingDate);
+            Utils.showMsg("a");
+            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            envList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            companyList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_tlName as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            tlList = qh.getInfo(mquery, closingDate);
+            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
+            mgrList = qh.getInfo(mquery, closingDate);
+
+            Utils.showMsg("b");
+            List<Model> actualData = qh.getKPITasksByMonth(query);
+            Utils.showMsg("c");
+            if (!actualData.isEmpty()) {
+                for (int i = 0; i < subList.size(); i++) {
+                    Utils.showMsg("1");
+                    for (int j = 0; j < envList.size(); j++) {
+                        Utils.showMsg("2");
+                        for (int k = 0; k < mgrList.size(); k++) {
+                            for (int l = 0; l < companyList.size(); l++) {
+                                for (int m = 0; m < tlList.size(); m++) {
+                                    Utils.showMsg("before status check");
+                                    for (int n = 0; n < extStatus.size(); n++) {
+                                        Utils.showMsg("3");
+                                        int extCount = 0;
+                                        Model mod = new Model();
+                                        for (int p = 0; p < actualData.size(); p++) {
+                                            Utils.showMsg("4");
+                                            if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
+                                                Utils.showMsg("5");
+                                                if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
+                                                    if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
+                                                        if (actualData.get(p).getTlName().equalsIgnoreCase(tlList.get(m))) {
+                                                            if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
+                                                                Utils.showMsg("6");
+                                                                Utils.showMsg(actualData.get(p).getExtKpiStatus());
+                                                                Utils.showMsg(extStatus.get(n));
+                                                                if (actualData.get(p).getExtKpiStatus().equalsIgnoreCase(extStatus.get(n))) {
+                                                                    Utils.showMsg("7");
+                                                                    extCount++;
+                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
+                                                                            + "Env: " + actualData.get(p).getEnv()
+                                                                            + " Internal: " + extStatus.get(n) + " : count: " + String.valueOf(extCount));
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }//
+                                            }
+                                        }
+                                        mod.setKpiStatus(extStatus.get(n));
+                                        mod.setSubject(subList.get(i));
+                                        mod.setEnv(envList.get(j));
+                                        mod.setManager(mgrList.get(k));
+                                        mod.setTlName(tlList.get(m));
+                                        mod.setCompany(companyList.get(l));
+
+                                        if (kpiCount.containsKey(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l))) {
+                                            mod = (Model) kpiCount.get(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l));
+
+                                            if (extStatus.get(n).equalsIgnoreCase("TL Exceed")) {
+                                                mod.setTlExceed(extCount);
+                                            } else if (extStatus.get(n).equalsIgnoreCase("TL Delay")) {
+                                                mod.setTlDelay(extCount);
+                                            } else if (extStatus.get(n).equalsIgnoreCase("TL Meet")) {
+                                                mod.setTlMeet(extCount);
+                                            } 
+                                        } else {
+                                            if (extStatus.get(n).equalsIgnoreCase("TL Exceed")) {
+                                                mod.setTlExceed(extCount);
+                                            } else if (extStatus.get(n).equalsIgnoreCase("TL Delay")) {
+                                                mod.setTlDelay(extCount);
+                                            } else if (extStatus.get(n).equalsIgnoreCase("TL Meet")) {
+                                                mod.setTlMeet(extCount);
+                                            } 
+                                            if (extCount != 0) {
+                                                kpiCount.put(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l), mod);
+                                            }
+                                        }
+
+                                        Utils.showMsg("External Count: " + String.valueOf(extCount));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                Utils.showMsg("Helllooo ");
+            }
+        }
+        for (Model url : kpiCount.values()) {
+            excelList.add(url);
+        }
+        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getKpiStatus().compareTo(o2.getKpiStatus());
+        Collections.sort(excelList, compareById);
+        return excelList;
+    }
+
     @Override
     public void onSuccess(ResultSet rSet) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

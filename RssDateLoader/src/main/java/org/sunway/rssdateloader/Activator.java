@@ -10,6 +10,7 @@ import org.sunway.rssdateloader.emailreminder.DailyReminder;
 import org.sunway.rssdateloader.emailreminder.MonthlyReminder;
 import org.sunway.rssdateloader.excel.ExcelTemplate;
 import org.sunway.rssdateloader.loadDataKPI.LoadProfileDataClass;
+import org.sunway.rssdateloader.schedular.WithdrawSchedular;
 import org.sunway.rssdateloader.storebinder.MasterSetupClass;
 import org.sunway.rssdateloader.storebinder.StoreBinderMain;
 
@@ -28,6 +29,7 @@ public class Activator implements BundleActivator {
         registrationList.add(context.registerService(MasterSetupClass.class.getName(), new MasterSetupClass(), null));
         registrationList.add(context.registerService(MonthlyReminder.class.getName(), new MonthlyReminder(), null));
         registrationList.add(context.registerService(DailyReminder.class.getName(), new DailyReminder(), null));
+        registrationList.add(context.registerService(WithdrawSchedular.class.getName(), new WithdrawSchedular(), null));
         
 
     }

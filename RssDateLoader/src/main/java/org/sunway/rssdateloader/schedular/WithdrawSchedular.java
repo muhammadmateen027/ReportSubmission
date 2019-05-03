@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joget.apps.app.service.AppUtil;
@@ -62,14 +63,24 @@ public class WithdrawSchedular extends DefaultApplicationPlugin implements Query
     public Object execute(Map props) {
         QueryHandler qh = new QueryHandler(this);
         List<Model> listRec = qh.getPendingRecords();
+        String uId = UUID.randomUUID().toString();
+        
+        Utils.showMsg("==> Inside Schedular");
 
         for (int i = 0; i < listRec.size(); i++) {
+            Utils.showMsg("1");
             try {
                 boolean isValid = getDateValidation(listRec.get(0).getActionTime());
+                Utils.showMsg("2" + String.valueOf(isValid));
 
                 if (isValid) {
+                    Utils.showMsg("3");
                     qh.updateRecordStatusById(listRec.get(0).getId());
                     stopProcess(qh, listRec.get(0).getId());
+                    
+                    qh.updateHistoryLog(uId, listRec.get(0).getId(), "System Action", "Auto Closed", "");
+                } else{
+                    Utils.showMsg("4");
                 }
             } catch (ParseException ex) {
                 Logger.getLogger(WithdrawSchedular.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +117,7 @@ public class WithdrawSchedular extends DefaultApplicationPlugin implements Query
         System.out.println("Current date: " + currentDate);
 
         validDate = formater.parse(formater.format(c.getTime()));
-        if (currentDate.equals(validDate)) {
+        if (currentDate.equals(validDate) || currentDate.after(validDate)) {
             isValid = true;
         }
         return isValid;

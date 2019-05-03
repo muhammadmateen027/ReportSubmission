@@ -31,7 +31,13 @@ public class Model {
     int Hotel=0;    
     int Medical=0;    
     int PDD=0;    
-    int PI=0;
+    int PI=0; 
+    int preExceed=0;
+    int preDelay=0;
+    int preMeet=0;
+    int tlExceed=0;
+    int tlDelay=0;
+    int tlMeet=0;
 
     public Model(int testEnv, int pi){
         this.TestEnv = testEnv;
@@ -39,7 +45,52 @@ public class Model {
     }
     
     public Model(){}
+    
+    public int getPreExceed() {
+        return preExceed;
+    }
 
+    public void setPreExceed(int preExceed) {
+        this.preExceed = preExceed;
+    }
+
+    public int getPreDelay() {
+        return preDelay;
+    }
+
+    public void setPreDelay(int preDelay) {
+        this.preDelay = preDelay;
+    }
+    public int getPreMeet() {
+        return preMeet;
+    }
+
+    public void setPreMeet(int preMeet) {
+        this.preMeet = preMeet;
+    }
+    public int getTlExceed() {
+        return tlExceed;
+    }
+
+    public void setTlExceed(int tlExceed) {
+        this.tlExceed = tlExceed;
+    }
+
+    public int getTlDelay() {
+        return tlDelay;
+    }
+
+    public void setTlDelay(int tlDelay) {
+        this.tlDelay = tlDelay;
+    }
+
+    public int getTlMeet() {
+        return tlMeet;
+    }
+
+    public void setTlMeet(int tlMeet) {
+        this.tlMeet = tlMeet;
+    }
     public int getTestEnv() {
         return TestEnv;
     }

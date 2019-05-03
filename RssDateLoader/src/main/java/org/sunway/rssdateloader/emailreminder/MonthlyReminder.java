@@ -92,7 +92,7 @@ public class MonthlyReminder extends DefaultApplicationPlugin implements QueryHa
     
     private void sendEmail(String to, String emailNames) {
         String cc = "yvonnewyw@sunway.com.my";
-        String link = "https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/delay_completed_list";
+        String link ="<a href=https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/delay_completed_list target=_blank> Click here. </a>";
         String subject = "Delay Completed - FSSC Report Submission";
         String message = "Dear "+ emailNames+", <br>"
             +"Kindly click the following link to view the delay completed => "+ link;

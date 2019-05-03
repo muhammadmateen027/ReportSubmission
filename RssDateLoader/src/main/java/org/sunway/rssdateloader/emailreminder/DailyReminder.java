@@ -68,7 +68,7 @@ public class DailyReminder extends DefaultApplicationPlugin implements QueryHand
                 + " c_f_int_date = DATE_FORMAT(CURDATE(), \"%d-%m-%Y\") AND c_status != ? ";
         List<String> managers = qh.getMonitoringEmail(query);
         
-        String link = "https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/internal_kpi_by_date";
+        String link = "<a href=https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/internal_kpi_by_date target=_blank> Click here. </a>";
         
         String Subject = "KPI Monitoring Email for target Internal Date [" + dateFormat.format(date)+"]";
         
@@ -82,7 +82,7 @@ public class DailyReminder extends DefaultApplicationPlugin implements QueryHand
         query = "Select c_manager_id from app_fd_rss_request_detail Where"
                 + " c_f_ext_date = DATE_FORMAT(CURDATE(), \"%d-%m-%Y\") AND c_status != ? ";
         managers = qh.getMonitoringEmail(query);
-        link = "https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/external_kpi_by_date";
+        link = "<a href=https://cloudappsdev.sunway.com.my/jw/web/userview/fssrss/rss_home_page/_/external_kpi_by_date target=_blank> Click here. </a>";
         Subject = "KPI Monitoring Email for target External Date [" + dateFormat.format(date)+"]";
         message = "Dear Sir/Madam, <br> Please click here to view the pending completion Target External Kpi Date =>" + link;
         if(managers.size() > 0) {
