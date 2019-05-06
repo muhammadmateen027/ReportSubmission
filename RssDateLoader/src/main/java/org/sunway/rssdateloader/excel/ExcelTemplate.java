@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +56,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     List<String> picList = null;
     List<String> tlList = null;
     List<String> companyList = null;
+    String[] managerList = {};
 
 //    Model dummy=new Model();
 //    List<Model> dummyList=new ArrayList<Model>();
@@ -89,7 +92,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
     public void webService(HttpServletRequest request, HttpServletResponse response) throws IOException, FileNotFoundException {
 
-        Utils.showMsg("excel creation");
+        // Utils.showMsg("excel creation");
         String filename = "RSS-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
@@ -98,6 +101,10 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         //TODO: 
         String mainQuery = getQuery(request);
         String closingDate = request.getParameter("closingDate");
+        String subjects = request.getParameter("subject");
+        if (subjects.equalsIgnoreCase("none")) {
+            subjects = "All";
+        }
 
 //        if (!closingDate.equalsIgnoreCase("") 
 //                && closingDate.equalsIgnoreCase("hell")) {
@@ -117,14 +124,19 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         // To create Heading
 //        String[] headings = {"KPI Status", "KPI Tasks", "Environment", "Count"};
         String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "Construction", "Dekon", "Emerging", "Hotel", "Medical", "PDD", "PI"};
-        String[] headings1 = {"KPI Status", "KPI Tasks", "TRAIN USER1 ,FAIZ RASHIDI"};
-        String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Delay","Preparer Meet"};
+        String[] headings1 = {"Manager(s)", "KPI Tasks", "Preparer Exceed", "Preparer Delay", "Preparer Meet", "TL Exceed", "TL Delay", "TL Meet"};
+        String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Delay", "Preparer Meet"};
         String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Delay", "TL Meet"};
 
-        Row headingRow = sheet.createRow(0);
-        Row headingRow1 = sheet1.createRow(0);
-        Row headingRow2 = sheet2.createRow(0);
-        Row headingRow3 = sheet3.createRow(0);
+        createHeader(sheet, closingDate, subjects);
+        createHeader(sheet1, closingDate, subjects);
+        createHeader(sheet2, closingDate, subjects);
+        createHeader(sheet3, closingDate, subjects);
+
+        Row headingRow = sheet.createRow(4);
+        Row headingRow1 = sheet1.createRow(4);
+        Row headingRow2 = sheet2.createRow(4);
+        Row headingRow3 = sheet3.createRow(4);
 
         int columnCount = 0;
         for (String col : headings) {
@@ -139,7 +151,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             Cell cell = headingRow1.createCell(columnCount1);
             cell.setCellValue(col);
             setFontStyle(cell, workbook);
-            sheet1.setColumnWidth(columnCount1, 9000);
+            sheet1.setColumnWidth(columnCount1, 6000);
             columnCount1++;
         }
         int columnCount2 = 0;
@@ -147,7 +159,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             Cell cell = headingRow2.createCell(columnCount2);
             cell.setCellValue(col);
             setFontStyle(cell, workbook);
-            sheet2.setColumnWidth(columnCount2, 9000);
+            sheet2.setColumnWidth(columnCount2, 6000);
             columnCount2++;
         }
         int columnCount3 = 0;
@@ -155,11 +167,11 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             Cell cell = headingRow3.createCell(columnCount3);
             cell.setCellValue(col);
             setFontStyle(cell, workbook);
-            sheet3.setColumnWidth(columnCount3, 9000);
+            sheet3.setColumnWidth(columnCount3, 6000);
             columnCount3++;
         }
         // to create data in sheet rows
-        int rowCount = 1;
+        int rowCount = 5;
         for (Model excelRow : excelEnvRows) {
             Row row = sheet.createRow(rowCount);
             Cell cell0 = row.createCell(0);
@@ -185,24 +197,28 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             rowCount++;
         }
 
-        int rowCount1 = 1;
+        int rowCount1 = 5;
         for (Model excelRow : excelMgrRows) {
             Row row = sheet1.createRow(rowCount1);
             Cell cell0 = row.createCell(0);
-            cell0.setCellValue(excelRow.getKpiStatus());
+            cell0.setCellValue(excelRow.getManager());
             Cell cell1 = row.createCell(1);
             cell1.setCellValue(excelRow.getSubject());
-            if (excelRow.getManager().equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
-                Cell cell2 = row.createCell(2);
-                cell2.setCellValue(excelRow.getCount());
-            } 
-//            else if (excelRow.getEnv().equalsIgnoreCase("PI")) {
-//                Cell cell3 = row.createCell(3);
-//                cell3.setCellValue(excelRow.getCount());
-//            }
+            Cell cell2 = row.createCell(2);
+            cell2.setCellValue(excelRow.getPreExceed());
+            Cell cell3 = row.createCell(3);
+            cell3.setCellValue(excelRow.getPreDelay());
+            Cell cell4 = row.createCell(4);
+            cell4.setCellValue(excelRow.getPreMeet());
+            Cell cell5 = row.createCell(5);
+            cell5.setCellValue(excelRow.getTlExceed());
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(excelRow.getTlDelay());
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(excelRow.getTlMeet());
             rowCount1++;
         }
-        int rowCount2 = 1;
+        int rowCount2 = 5;
         for (Model excelRow : excelPICRows) {
             Row row = sheet2.createRow(rowCount2);
             Cell cell0 = row.createCell(0);
@@ -223,7 +239,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell7.setCellValue(excelRow.getPreMeet());
             rowCount2++;
         }
-        int rowCount3 = 1;
+        int rowCount3 = 5;
         for (Model excelRow : excelTLRows) {
             Row row = sheet3.createRow(rowCount3);
             Cell cell0 = row.createCell(0);
@@ -248,12 +264,12 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         try {
             outStream = response.getOutputStream();
             workbook.write(outStream);
-            Utils.showMsg("workbook ceation");
+            // Utils.showMsg("workbook ceation");
             outStream.close();
         } catch (FileNotFoundException ex) {
-            Utils.showMsg(ex.getMessage());
+            // Utils.showMsg(ex.getMessage());
         } catch (IOException ex) {
-            Utils.showMsg(ex.getMessage());
+            // Utils.showMsg(ex.getMessage());
         }
 
     }
@@ -272,6 +288,22 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return list;
     }
 
+    private void createHeader(XSSFSheet sheet, String closingDate, String subjects) {
+        Row dateRowRow = sheet.createRow(1);
+        Cell clDateH = dateRowRow.createCell(0);
+        clDateH.setCellValue("Closing Date");
+
+        Cell clDate = dateRowRow.createCell(1);
+        clDate.setCellValue(closingDate);
+
+        Row subRow = sheet.createRow(2);
+        Cell subH = subRow.createCell(0);
+        subH.setCellValue("Subject");
+
+        Cell sub = subRow.createCell(1);
+        sub.setCellValue(subjects);
+    }
+
     private String getQuery(HttpServletRequest request) {
         String query = "";
         String closingDate = request.getParameter("closingDate");
@@ -284,11 +316,10 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
         String[] array = null;
 
-        Utils.showMsg("===>>> Here date is: " + closingDate + " : Subject : " + subject);
-        Utils.showMsg("===>>> teamLeader: " + teamLeader + " : glManager : " + glManager);
-        Utils.showMsg("===>>> preparer: " + preparer);
-        Utils.showMsg("===>>> period_from: " + period_from + " : period_to : " + period_to);
-
+        // Utils.showMsg("===>>> Here date is: " + closingDate + " : Subject : " + subject);
+        // Utils.showMsg("===>>> teamLeader: " + teamLeader + " : glManager : " + glManager);
+        // Utils.showMsg("===>>> preparer: " + preparer);
+        // Utils.showMsg("===>>> period_from: " + period_from + " : period_to : " + period_to);
         query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth, c_manager_name \n"
                 + " from  app_fd_rss_request_detail Where c_close_mnth = '" + closingDate + "' \n";
 
@@ -468,7 +499,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
                 }
             } else {
-                Utils.showMsg("Helllooo ");
+                // Utils.showMsg("Helllooo ");
             }
         }
 
@@ -533,24 +564,26 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                             mod.setKpiStatus(intStatus.get(k));
                             mod.setSubject(subList.get(i));
                             mod.setManager(mgrList.get(j));
-                            if (kpiCount.containsKey(intStatus.get(k) + subList.get(i))) {
-                                mod = (Model) kpiCount.get(intStatus.get(k) + subList.get(i));
+                            if (kpiCount.containsKey(subList.get(i) + mgrList.get(j))) {
+                                mod = (Model) kpiCount.get(subList.get(i) + mgrList.get(j));
 
-                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
-                                    mod.setCount(intCount);
-                                } 
-//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(intCount);
-//                                } 
+                                if (intStatus.get(k).equalsIgnoreCase("Preparer Exceed")) {
+                                    mod.setPreExceed(intCount);
+                                } else if (intStatus.get(k).equalsIgnoreCase("Preparer Delay")) {
+                                    mod.setPreDelay(intCount);
+                                } else if (intStatus.get(k).equalsIgnoreCase("Preparer Meet")) {
+                                    mod.setPreMeet(intCount);
+                                }
                             } else {
-                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
-                                    mod.setCount(intCount);
-                                } 
-//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(intCount);
-//                                } 
+                                if (intStatus.get(k).equalsIgnoreCase("Preparer Exceed")) {
+                                    mod.setPreExceed(intCount);
+                                } else if (intStatus.get(k).equalsIgnoreCase("Preparer Delay")) {
+                                    mod.setPreDelay(intCount);
+                                } else if (intStatus.get(k).equalsIgnoreCase("Preparer Meet")) {
+                                    mod.setPreMeet(intCount);
+                                }
                                 if (intCount != 0) {
-                                    kpiCount.put(intStatus.get(k) + subList.get(i), mod);
+                                    kpiCount.put(subList.get(i) + mgrList.get(j), mod);
                                 }
                             }
                         }
@@ -580,29 +613,29 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                             mod.setKpiStatus(extStatus.get(m));
                             mod.setSubject(subList.get(i));
                             mod.setManager(mgrList.get(j));
-                            if (kpiCount.containsKey(extStatus.get(m) + subList.get(i))) {
-                                mod = (Model) kpiCount.get(extStatus.get(m) + subList.get(i));
-                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
-                                    mod.setCount(extCount);
-                                } 
-//                                    else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(extCount);
-//                                } 
+                            if (kpiCount.containsKey(subList.get(i) + mgrList.get(j))) {
+                                mod = (Model) kpiCount.get(subList.get(i) + mgrList.get(j));
+
+                                if (extStatus.get(m).equalsIgnoreCase("TL Exceed")) {
+                                    mod.setTlExceed(extCount);
+                                } else if (extStatus.get(m).equalsIgnoreCase("TL Delay")) {
+                                    mod.setTlDelay(extCount);
+                                } else if (extStatus.get(m).equalsIgnoreCase("TL Meet")) {
+                                    mod.setTlMeet(extCount);
+                                }
                             } else {
-                                if (mgrList.get(j).equalsIgnoreCase("TRAIN USER1 ,FAIZ RASHIDI")) {
-                                    mod.setCount(extCount);
-                                } 
-//                                else if (mgrList.get(j).equalsIgnoreCase("Construction")) {
-//                                    mod.setConstruction(extCount);
-//                                } 
+                                if (extStatus.get(m).equalsIgnoreCase("TL Exceed")) {
+                                    mod.setTlExceed(extCount);
+                                } else if (extStatus.get(m).equalsIgnoreCase("TL Delay")) {
+                                    mod.setTlDelay(extCount);
+                                } else if (extStatus.get(m).equalsIgnoreCase("TL Meet")) {
+                                    mod.setTlMeet(extCount);
+                                }
                                 if (extCount != 0) {
-                                    kpiCount.put(extStatus.get(m) + subList.get(i), mod);
+                                    kpiCount.put(subList.get(i) + mgrList.get(j), mod);
                                 }
                             }
-
                         }
-//                        Utils.showMsg("Int Count: " + String.valueOf(intCount));
-//                        Utils.showMsg("Ext Count: " + String.valueOf(extCount));
                     }
 
                 }
@@ -613,7 +646,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         for (Model url : kpiCount.values()) {
             excelList.add(url);
         }
-        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getKpiStatus().compareTo(o2.getKpiStatus());
+        Comparator<Model> compareById = (Model o1, Model o2) -> o1.getSubject().compareTo(o2.getSubject());
         Collections.sort(excelList, compareById);
         return excelList;
     }
@@ -628,7 +661,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         if (!closingDate.equalsIgnoreCase("")) {
             mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
             subList = qh.getInfo(mquery, closingDate);
-            Utils.showMsg("a");
+            // Utils.showMsg("a");
             mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
             envList = qh.getInfo(mquery, closingDate);
             mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
@@ -638,39 +671,39 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
             mgrList = qh.getInfo(mquery, closingDate);
 
-            Utils.showMsg("b");
+            // Utils.showMsg("b");
             List<Model> actualData = qh.getKPITasksByMonth(query);
-            Utils.showMsg("c");
+            // Utils.showMsg("c");
             if (!actualData.isEmpty()) {
                 for (int i = 0; i < subList.size(); i++) {
-                    Utils.showMsg("1");
+                    // Utils.showMsg("1");
                     for (int j = 0; j < envList.size(); j++) {
-                        Utils.showMsg("2");
+                        // Utils.showMsg("2");
                         for (int k = 0; k < mgrList.size(); k++) {
                             for (int l = 0; l < companyList.size(); l++) {
                                 for (int m = 0; m < picList.size(); m++) {
-                                    Utils.showMsg("before status check");
+                                    // Utils.showMsg("before status check");
                                     for (int n = 0; n < intStatus.size(); n++) {
-                                        Utils.showMsg("3");
+                                        // Utils.showMsg("3");
                                         int intCount = 0;
                                         Model mod = new Model();
                                         for (int p = 0; p < actualData.size(); p++) {
-                                            Utils.showMsg("4");
+                                            // Utils.showMsg("4");
                                             if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
-                                                Utils.showMsg("5");
+                                                // Utils.showMsg("5");
                                                 if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
                                                     if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
                                                         if (actualData.get(p).getPicName().equalsIgnoreCase(picList.get(m))) {
                                                             if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
-                                                                Utils.showMsg("6");
-                                                                Utils.showMsg(actualData.get(p).getIntKpiStatus());
-                                                                Utils.showMsg(intStatus.get(n));
+                                                                // Utils.showMsg("6");
+                                                                // Utils.showMsg(actualData.get(p).getIntKpiStatus());
+                                                                // Utils.showMsg(intStatus.get(n));
                                                                 if (actualData.get(p).getIntKpiStatus().equalsIgnoreCase(intStatus.get(n))) {
-                                                                    Utils.showMsg("7");
+                                                                    // Utils.showMsg("7");
                                                                     intCount++;
-                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
-                                                                            + "Env: " + actualData.get(p).getEnv()
-                                                                            + " Internal: " + intStatus.get(n) + " : count: " + String.valueOf(intCount));
+                                                                    // Utils.showMsg("Subj: " + actualData.get(p).getSubject()
+//                                                                            + "Env: " + actualData.get(p).getEnv()
+//                                                                            + " Internal: " + intStatus.get(n) + " : count: " + String.valueOf(intCount));
                                                                 }
                                                             }
                                                         }
@@ -684,9 +717,9 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                         mod.setManager(mgrList.get(k));
                                         mod.setPicName(picList.get(m));
                                         mod.setCompany(companyList.get(l));
-                                        
-                                        if (kpiCount.containsKey(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l))) {
-                                            mod = (Model) kpiCount.get(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l));
+
+                                        if (kpiCount.containsKey(subList.get(i) + envList.get(j) + mgrList.get(k) + picList.get(m) + companyList.get(l))) {
+                                            mod = (Model) kpiCount.get(subList.get(i) + envList.get(j) + mgrList.get(k) + picList.get(m) + companyList.get(l));
 
                                             if (intStatus.get(n).equalsIgnoreCase("Preparer Exceed")) {
                                                 mod.setPreExceed(intCount);
@@ -694,7 +727,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                                 mod.setPreDelay(intCount);
                                             } else if (intStatus.get(n).equalsIgnoreCase("Preparer Meet")) {
                                                 mod.setPreMeet(intCount);
-                                            } 
+                                            }
                                         } else {
                                             if (intStatus.get(n).equalsIgnoreCase("Preparer Exceed")) {
                                                 mod.setPreExceed(intCount);
@@ -702,13 +735,13 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                                 mod.setPreDelay(intCount);
                                             } else if (intStatus.get(n).equalsIgnoreCase("Preparer Meet")) {
                                                 mod.setPreMeet(intCount);
-                                            } 
+                                            }
                                             if (intCount != 0) {
-                                                kpiCount.put(subList.get(i)+envList.get(j)+mgrList.get(k)+picList.get(m)+companyList.get(l), mod);
+                                                kpiCount.put(subList.get(i) + envList.get(j) + mgrList.get(k) + picList.get(m) + companyList.get(l), mod);
                                             }
                                         }
 
-                                        Utils.showMsg("Internal Count: " + String.valueOf(intCount));
+                                        // Utils.showMsg("Internal Count: " + String.valueOf(intCount));
                                     }
                                 }
                             }
@@ -717,7 +750,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
                 }
             } else {
-                Utils.showMsg("Helllooo ");
+                // Utils.showMsg("Helllooo ");
             }
         }
         for (Model url : kpiCount.values()) {
@@ -738,7 +771,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         if (!closingDate.equalsIgnoreCase("")) {
             mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
             subList = qh.getInfo(mquery, closingDate);
-            Utils.showMsg("a");
+            // Utils.showMsg("a");
             mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
             envList = qh.getInfo(mquery, closingDate);
             mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
@@ -748,39 +781,39 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
             mgrList = qh.getInfo(mquery, closingDate);
 
-            Utils.showMsg("b");
+            // Utils.showMsg("b");
             List<Model> actualData = qh.getKPITasksByMonth(query);
-            Utils.showMsg("c");
+            // Utils.showMsg("c");
             if (!actualData.isEmpty()) {
                 for (int i = 0; i < subList.size(); i++) {
-                    Utils.showMsg("1");
+                    // Utils.showMsg("1");
                     for (int j = 0; j < envList.size(); j++) {
-                        Utils.showMsg("2");
+                        // Utils.showMsg("2");
                         for (int k = 0; k < mgrList.size(); k++) {
                             for (int l = 0; l < companyList.size(); l++) {
                                 for (int m = 0; m < tlList.size(); m++) {
-                                    Utils.showMsg("before status check");
+                                    // Utils.showMsg("before status check");
                                     for (int n = 0; n < extStatus.size(); n++) {
-                                        Utils.showMsg("3");
+                                        // Utils.showMsg("3");
                                         int extCount = 0;
                                         Model mod = new Model();
                                         for (int p = 0; p < actualData.size(); p++) {
-                                            Utils.showMsg("4");
+                                            // Utils.showMsg("4");
                                             if (actualData.get(p).getEnv().equalsIgnoreCase(envList.get(j))) {
-                                                Utils.showMsg("5");
+                                                // Utils.showMsg("5");
                                                 if (actualData.get(p).getSubject().equalsIgnoreCase(subList.get(i))) {
                                                     if (actualData.get(p).getManager().equalsIgnoreCase(mgrList.get(k))) {
                                                         if (actualData.get(p).getTlName().equalsIgnoreCase(tlList.get(m))) {
                                                             if (actualData.get(p).getCompany().equalsIgnoreCase(companyList.get(l))) {
-                                                                Utils.showMsg("6");
-                                                                Utils.showMsg(actualData.get(p).getExtKpiStatus());
-                                                                Utils.showMsg(extStatus.get(n));
+                                                                // Utils.showMsg("6");
+                                                                // Utils.showMsg(actualData.get(p).getExtKpiStatus());
+                                                                // Utils.showMsg(extStatus.get(n));
                                                                 if (actualData.get(p).getExtKpiStatus().equalsIgnoreCase(extStatus.get(n))) {
-                                                                    Utils.showMsg("7");
+                                                                    // Utils.showMsg("7");
                                                                     extCount++;
-                                                                    Utils.showMsg("Subj: " + actualData.get(p).getSubject()
-                                                                            + "Env: " + actualData.get(p).getEnv()
-                                                                            + " Internal: " + extStatus.get(n) + " : count: " + String.valueOf(extCount));
+                                                                    // Utils.showMsg("Subj: " + actualData.get(p).getSubject()
+//                                                                            + "Env: " + actualData.get(p).getEnv()
+//                                                                            + " Internal: " + extStatus.get(n) + " : count: " + String.valueOf(extCount));
                                                                 }
                                                             }
                                                         }
@@ -795,8 +828,8 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                         mod.setTlName(tlList.get(m));
                                         mod.setCompany(companyList.get(l));
 
-                                        if (kpiCount.containsKey(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l))) {
-                                            mod = (Model) kpiCount.get(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l));
+                                        if (kpiCount.containsKey(subList.get(i) + envList.get(j) + mgrList.get(k) + tlList.get(m) + companyList.get(l))) {
+                                            mod = (Model) kpiCount.get(subList.get(i) + envList.get(j) + mgrList.get(k) + tlList.get(m) + companyList.get(l));
 
                                             if (extStatus.get(n).equalsIgnoreCase("TL Exceed")) {
                                                 mod.setTlExceed(extCount);
@@ -804,7 +837,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                                 mod.setTlDelay(extCount);
                                             } else if (extStatus.get(n).equalsIgnoreCase("TL Meet")) {
                                                 mod.setTlMeet(extCount);
-                                            } 
+                                            }
                                         } else {
                                             if (extStatus.get(n).equalsIgnoreCase("TL Exceed")) {
                                                 mod.setTlExceed(extCount);
@@ -812,13 +845,13 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
                                                 mod.setTlDelay(extCount);
                                             } else if (extStatus.get(n).equalsIgnoreCase("TL Meet")) {
                                                 mod.setTlMeet(extCount);
-                                            } 
+                                            }
                                             if (extCount != 0) {
-                                                kpiCount.put(subList.get(i)+envList.get(j)+mgrList.get(k)+tlList.get(m)+companyList.get(l), mod);
+                                                kpiCount.put(subList.get(i) + envList.get(j) + mgrList.get(k) + tlList.get(m) + companyList.get(l), mod);
                                             }
                                         }
 
-                                        Utils.showMsg("External Count: " + String.valueOf(extCount));
+                                        // Utils.showMsg("External Count: " + String.valueOf(extCount));
                                     }
                                 }
                             }
@@ -827,7 +860,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
                 }
             } else {
-                Utils.showMsg("Helllooo ");
+                // Utils.showMsg("Helllooo ");
             }
         }
         for (Model url : kpiCount.values()) {
