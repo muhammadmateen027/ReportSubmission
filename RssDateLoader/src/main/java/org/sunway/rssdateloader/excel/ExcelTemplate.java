@@ -172,6 +172,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         }
         // to create data in sheet rows
         int rowCount = 5;
+        int excelSize = excelEnvRows.size();
         for (Model excelRow : excelEnvRows) {
             Row row = sheet.createRow(rowCount);
             Cell cell0 = row.createCell(0);
@@ -194,6 +195,20 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             cell8.setCellValue(excelRow.getPDD());
             Cell cell9 = row.createCell(9);
             cell9.setCellValue(excelRow.getPI());
+
+            if (rowCount == excelSize + 4) {
+                Row rowTotal = sheet.createRow(rowCount+2);
+                Cell grand = rowTotal.createCell(1);
+                grand.setCellValue("Grand total: ");
+                
+                Cell cTotal = rowTotal.createCell(2);
+                rowTotal.getCell(2).setCellFormula("SUM(C6:C"+(rowCount+1)+")");
+                
+//                cTotal.setCellFormula("SUM(C6:C"+(rowCount+1)+")");
+//                cTotal.setCellValue(totalEnv);
+            } else {
+                Utils.showMsg("==>> Here: "+ String.valueOf(rowCount) + " : Total: "+ String.valueOf(excelSize));
+            }
             rowCount++;
         }
 
