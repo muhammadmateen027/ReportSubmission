@@ -8,6 +8,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.sunway.rssdateloader.emailreminder.DailyReminder;
 import org.sunway.rssdateloader.emailreminder.MonthlyReminder;
+import org.sunway.rssdateloader.excel.ExcelByYear;
 import org.sunway.rssdateloader.excel.ExcelTemplate;
 import org.sunway.rssdateloader.loadDataKPI.LoadProfileDataClass;
 import org.sunway.rssdateloader.schedular.WithdrawSchedular;
@@ -30,6 +31,7 @@ public class Activator implements BundleActivator {
         registrationList.add(context.registerService(MonthlyReminder.class.getName(), new MonthlyReminder(), null));
         registrationList.add(context.registerService(DailyReminder.class.getName(), new DailyReminder(), null));
         registrationList.add(context.registerService(WithdrawSchedular.class.getName(), new WithdrawSchedular(), null));
+        registrationList.add(context.registerService(ExcelByYear.class.getName(), new ExcelByYear(), null));
         
 
     }

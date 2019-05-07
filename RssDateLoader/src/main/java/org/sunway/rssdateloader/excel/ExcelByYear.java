@@ -45,9 +45,9 @@ import sun.rmi.server.Util;
  *
  * @author kirthikan
  */
-public class ExcelTemplate extends Element implements PluginWebSupport, QueryHandlerInterface {
+public class ExcelByYear extends Element implements PluginWebSupport, QueryHandlerInterface {
 
-    final String pluginName = "RSS - ExcelTemplate";
+    final String pluginName = "RSS - ByYear ExcelTemplate";
     final String version = "1.0";
     JSONArray jSONArray;
     List<String> subList = null;
@@ -58,9 +58,6 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     List<String> companyList = null;
     String[] managerList = {};
 
-//    Model dummy=new Model();
-//    List<Model> dummyList=new ArrayList<Model>();
-    //PrintWriter out;
     @Override
     public String renderTemplate(FormData fd, Map map) {
         return "";
@@ -92,24 +89,36 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
     public void webService(HttpServletRequest request, HttpServletResponse response) throws IOException, FileNotFoundException {
 
-        // Utils.showMsg("excel creation");
+         Utils.showMsg("excel creation");
         String filename = "RSS-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".xlsx";
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename);
         ServletOutputStream outStream;
 
         //TODO: 
+        Utils.showMsg("==>> "+"Hellooo");
         String mainQuery = getQuery(request);
-        String closingDate = request.getParameter("closingDate");
+        Utils.showMsg("==>> "+mainQuery);
+        
+        String from = request.getParameter("from");
+        String to = request.getParameter("to");
+        String year = request.getParameter("year");
+        
+        
+        String startMonth = from + "-" +year;
+        String endMonth = to + "-" +year;
+        
+        Utils.showMsg("==>> "+startMonth + " ; "+ endMonth);
+        
         String subjects = request.getParameter("subject");
         if (subjects.equalsIgnoreCase("none")) {
             subjects = "All";
         }
 
-        List<Model> excelEnvRows = createEnvSheet(closingDate, mainQuery);
-        List<Model> excelMgrRows = createManagerSheet(closingDate, mainQuery);
-        List<Model> excelPICRows = createPICSheet(closingDate, mainQuery);
-        List<Model> excelTLRows = createTLSheet(closingDate, mainQuery);
+        List<Model> excelEnvRows = createEnvSheet(startMonth, endMonth, mainQuery);
+        List<Model> excelMgrRows = createManagerSheet(startMonth, endMonth, mainQuery);
+        List<Model> excelPICRows = createPICSheet(startMonth, endMonth, mainQuery);
+        List<Model> excelTLRows = createTLSheet(startMonth, endMonth, mainQuery);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("By Environment");
@@ -123,10 +132,10 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Delay", "Preparer Meet"};
         String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Delay", "TL Meet"};
 
-        createHeader(sheet, closingDate, subjects);
-        createHeader(sheet1, closingDate, subjects);
-        createHeader(sheet2, closingDate, subjects);
-        createHeader(sheet3, closingDate, subjects);
+        createHeader(sheet, startMonth, endMonth, subjects);
+        createHeader(sheet1, startMonth, endMonth, subjects);
+        createHeader(sheet2, startMonth, endMonth, subjects);
+        createHeader(sheet3, startMonth, endMonth, subjects);
 
         Row headingRow = sheet.createRow(4);
         Row headingRow1 = sheet1.createRow(4);
@@ -342,12 +351,12 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return list;
     }
 
-    private void createHeader(XSSFSheet sheet, String closingDate, String subjects) {
+    private void createHeader(XSSFSheet sheet, String startMonth, String endMonth, String subjects) {
         Row dateRowRow = sheet.createRow(1);
         Cell clDateH = dateRowRow.createCell(0);
         clDateH.setCellValue("Closing Date");
         Cell clDate = dateRowRow.createCell(1);
-        clDate.setCellValue(closingDate);
+        clDate.setCellValue(startMonth + " to "+ endMonth);
 
         Row subRow = sheet.createRow(2);
         Cell subH = subRow.createCell(0);
@@ -358,18 +367,25 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
 
     private String getQuery(HttpServletRequest request) {
         String query = "";
-        String closingDate = request.getParameter("closingDate");
+        
+        String from = request.getParameter("from");
+        String to = request.getParameter("to");
+        String year = request.getParameter("year");
+        
+        Utils.showMsg("==>> "+year);
+        
         String subject = request.getParameter("subject");
         String teamLeader = request.getParameter("teamLeader");
         String glManager = request.getParameter("glManager");
         String preparer = request.getParameter("preparer");
-        String period_from = request.getParameter("period_from");
-        String period_to = request.getParameter("period_to");
 
         String[] array = null;
-
+        
+        String fromDate = from+"-"+year;
+        String toDate = to+"-"+year;
+        
         query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth, c_manager_name \n"
-                + " from  app_fd_rss_request_detail Where c_close_mnth = '" + closingDate + "' \n";
+                + " from  app_fd_rss_request_detail Where c_close_mnth BETWEEN '" + fromDate + "' AND '" + toDate  +"' \n";
 
         if (!subject.equalsIgnoreCase("none")) {
             query += " AND c_sub_id ='" + subject + "' ";
@@ -387,24 +403,10 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
             query += " AND c_username ='" + preparer + "' ";
         }
 
-        if (!period_from.equalsIgnoreCase("none")) {
-            array = period_from.split("\\-");
-            period_from = array[2] + "-" + array[1] + "-" + array[0];
-
-            query += " AND c_period_from ='" + period_from + "' ";
-        }
-
-        if (!period_to.equalsIgnoreCase("none")) {
-            array = period_to.split("\\-");
-            period_to = array[2] + "-" + array[1] + "-" + array[0];
-
-            query += " AND c_period_to ='" + period_to + "' ";
-        }
-
         return query;
     }
 
-    private List<Model> createEnvSheet(String closingDate, String query) {
+    private List<Model> createEnvSheet(String startMonth, String endMonth, String query) {
         QueryHandler qh = new QueryHandler(this);
         HashMap<String, Model> kpiCount = new HashMap<String, Model>();
         String mQuery = "";
@@ -412,11 +414,11 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         List<String> extStatus = getStatus("external");
         List<Model> excelList = new ArrayList<Model>();
 
-        if (!closingDate.equalsIgnoreCase("")) {
-            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(mQuery, closingDate);
-            mQuery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            envList = qh.getInfo(mQuery, closingDate);
+        if (!startMonth.equalsIgnoreCase("")) {
+            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ?";
+            subList = qh.getInfo(mQuery, endMonth);
+            mQuery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ?";
+            envList = qh.getInfo(mQuery, endMonth);
 
             List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
@@ -560,7 +562,7 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
     }
 
 //    //filter by manager
-    private List<Model> createManagerSheet(String closingDate, String query) {
+    private List<Model> createManagerSheet(String startMonth, String endMonth, String query) {
         QueryHandler qh = new QueryHandler(this);
         HashMap<String, Model> kpiCount = new HashMap<String, Model>();
         String mQuery = "";
@@ -568,11 +570,11 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         List<String> extStatus = getStatus("external");
         List<Model> excelList = new ArrayList<Model>();
 
-        if (!closingDate.equalsIgnoreCase("")) {
-            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(mQuery, closingDate);
-            mQuery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            mgrList = qh.getInfo(mQuery, closingDate);
+        if (!startMonth.equalsIgnoreCase("")) {
+            mQuery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ?";
+            subList = qh.getInfo(mQuery, endMonth);
+            mQuery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ?";
+            mgrList = qh.getInfo(mQuery, endMonth);
             List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
                 for (int i = 0; i < subList.size(); i++) {
@@ -670,24 +672,24 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return excelList;
     }
 
-    private List<Model> createPICSheet(String closingDate, String query) {
+    private List<Model> createPICSheet(String startMonth, String endMonth, String query) {
         QueryHandler qh = new QueryHandler(this);
         String mquery = "";
         HashMap<String, Model> kpiCount = new HashMap<String, Model>();
         List<String> intStatus = getStatus("internal");
         List<Model> excelList = new ArrayList<Model>();
 
-        if (!closingDate.equalsIgnoreCase("")) {
-            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            envList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            companyList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_pic_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            picList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            mgrList = qh.getInfo(mquery, closingDate);
+        if (!startMonth.equalsIgnoreCase("")) {
+            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ?";
+            subList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            envList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            companyList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_pic_name as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            picList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            mgrList = qh.getInfo(mquery, endMonth);
 
             List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
@@ -762,24 +764,24 @@ public class ExcelTemplate extends Element implements PluginWebSupport, QueryHan
         return excelList;
     }
 
-    private List<Model> createTLSheet(String closingDate, String query) {
+    private List<Model> createTLSheet(String startMonth, String endMonth, String query) {
         QueryHandler qh = new QueryHandler(this);
         String mquery = "";
         HashMap<String, Model> kpiCount = new HashMap<String, Model>();
         List<String> extStatus = getStatus("external");
         List<Model> excelList = new ArrayList<Model>();
 
-        if (!closingDate.equalsIgnoreCase("")) {
-            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth =  ?";
-            subList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            envList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            companyList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_tlName as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            tlList = qh.getInfo(mquery, closingDate);
-            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth = ? ";
-            mgrList = qh.getInfo(mquery, closingDate);
+        if (!startMonth.equalsIgnoreCase("")) {
+            mquery = "select distinct c_sub_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND  ?";
+            subList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_env as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            envList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_company_id as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            companyList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_tlName as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            tlList = qh.getInfo(mquery, endMonth);
+            mquery = "select distinct c_manager_name as col from app_fd_rss_request_detail Where c_close_mnth BETWEEN '"+startMonth+"' AND ? ";
+            mgrList = qh.getInfo(mquery, endMonth);
 
             List<Model> actualData = qh.getKPITasksByMonth(query);
             if (!actualData.isEmpty()) {
