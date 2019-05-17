@@ -84,7 +84,10 @@ public class FormStatusClass implements QueryHandlerInterface {
         String historyStatus = "";
 
         if (tlAction.equalsIgnoreCase("Approve")) {
+            RequestForm form = new RequestForm(formData, rowSet);
+            form.createRequestForm();
             String ext_date = row.getProperty("ext_date");
+
             try {
                 String kpiStatus = Utils.getKpiStatus(ext_date);
                 

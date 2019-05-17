@@ -9,7 +9,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.sunway.rssdateloader.emailreminder.DailyReminder;
 import org.sunway.rssdateloader.emailreminder.MonthlyReminder;
 import org.sunway.rssdateloader.excel.ExcelByYear;
-import org.sunway.rssdateloader.excel.ExcelTemplate;
+import org.sunway.rssdateloader.excel.ExcelByMonth;
 import org.sunway.rssdateloader.loadDataKPI.LoadProfileDataClass;
 import org.sunway.rssdateloader.schedular.WithdrawSchedular;
 import org.sunway.rssdateloader.storebinder.MasterSetupClass;
@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
         //Register plugin here
         registrationList.add(context.registerService(FormDataLoaderClass.class.getName(), new FormDataLoaderClass(), null));
         registrationList.add(context.registerService(StoreBinderMain.class.getName(), new StoreBinderMain(), null));
-	registrationList.add(context.registerService(ExcelTemplate.class.getName(), new ExcelTemplate(), null));
+	registrationList.add(context.registerService(ExcelByMonth.class.getName(), new ExcelByMonth(), null));
         registrationList.add(context.registerService(LoadProfileDataClass.class.getName(), new LoadProfileDataClass(), null));
         registrationList.add(context.registerService(MasterSetupClass.class.getName(), new MasterSetupClass(), null));
         registrationList.add(context.registerService(MonthlyReminder.class.getName(), new MonthlyReminder(), null));

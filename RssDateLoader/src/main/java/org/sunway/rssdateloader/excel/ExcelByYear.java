@@ -127,7 +127,7 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
         XSSFSheet sheet3 = workbook.createSheet("By TeamLeader");
 
         // To create Heading
-        String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "Construction", "Dekon", "Emerging", "Hotel", "Medical", "PDD", "PI"};
+        String[] headings = {"KPI Status", "KPI Tasks", "TestEnv", "Construction", "Dekon", "Emerging", "Hotel", "Medical", "PDD", "PI","REIT"};
         String[] headings1 = {"Manager(s)", "KPI Tasks", "Preparer Exceed", "Preparer Delay", "Preparer Meet", "TL Exceed", "TL Delay", "TL Meet"};
         String[] headings2 = {"PIC Name", "Industry", "Company", "GL Manager", "KPI Tasks", "Preparer Exceed", "Preparer Delay", "Preparer Meet"};
         String[] headings3 = {"TL Name", "Industry", "Company", "GL Manager", "KPI Tasks", "TL Exceed", "TL Delay", "TL Meet"};
@@ -199,6 +199,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
             cell8.setCellValue(excelRow.getPDD());
             Cell cell9 = row.createCell(9);
             cell9.setCellValue(excelRow.getPI());
+            Cell cell10 = row.createCell(10);
+            cell10.setCellValue(excelRow.getREIT());
             rowCount++;
             if (rowCount == excelSize + 4) {
                 Row rowTotal = sheet.createRow(rowCount + 2);
@@ -214,6 +216,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
                 rowTotal.createCell(7).setCellFormula("SUM(H6:H" + (rowCount + 1) + ")");
                 rowTotal.createCell(8).setCellFormula("SUM(I6:I" + (rowCount + 1) + ")");
                 rowTotal.createCell(9).setCellFormula("SUM(J6:J" + (rowCount + 1) + ")");
+                rowTotal.createCell(10).setCellFormula("SUM(K6:K" + (rowCount + 1) + ")");
+
             } else {
                 Utils.showMsg("==>> Here: " + String.valueOf(rowCount) + " : Total: " + String.valueOf(excelSize));
             }
@@ -381,11 +385,11 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
 
         String[] array = null;
         
-        String fromDate = from+"-"+year;
-        String toDate = to+"-"+year;
+        String fromDate = year+"-"+from;
+        String toDate = year+"-"+to;
         
-        query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth, c_manager_name \n"
-                + " from  app_fd_rss_request_detail Where c_close_mnth BETWEEN '" + fromDate + "' AND '" + toDate  +"' \n";
+        query = "select distinct id, c_env, c_manager_name,c_company_id, c_pic_name, c_tlName, c_int_kpi_status, c_ext_kpi_status, c_sub_id, c_close_mnth,c_close_month_report, c_manager_name \n"
+                + " from  app_fd_rss_request_detail Where c_close_month_report BETWEEN '" + fromDate + "' AND '" + toDate  +"' \n";
 
         if (!subject.equalsIgnoreCase("none")) {
             query += " AND c_sub_id ='" + subject + "' ";
@@ -460,6 +464,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
                                     mod.setPDD(intCount);
                                 } else if (envList.get(j).equalsIgnoreCase("PI")) {
                                     mod.setPI(intCount);
+                                }else if (envList.get(j).equalsIgnoreCase("REIT")) {
+                                    mod.setREIT(intCount);
                                 }
                             } else {
                                 if (envList.get(j).equalsIgnoreCase("TestEnv")) {
@@ -478,6 +484,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
                                     mod.setPDD(intCount);
                                 } else if (envList.get(j).equalsIgnoreCase("PI")) {
                                     mod.setPI(intCount);
+                                }else if (envList.get(j).equalsIgnoreCase("REIT")) {
+                                    mod.setREIT(intCount);
                                 }
                                 if (intCount != 0) {
                                     kpiCount.put(intStatus.get(k) + subList.get(i), mod);
@@ -520,6 +528,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
                                     mod.setPDD(extCount);
                                 } else if (envList.get(j).equalsIgnoreCase("PI")) {
                                     mod.setPI(extCount);
+                                }else if (envList.get(j).equalsIgnoreCase("REIT")) {
+                                    mod.setREIT(extCount);
                                 }
                             } else {
                                 if (envList.get(j).equalsIgnoreCase("TestEnv")) {
@@ -538,6 +548,8 @@ public class ExcelByYear extends Element implements PluginWebSupport, QueryHandl
                                     mod.setPDD(extCount);
                                 } else if (envList.get(j).equalsIgnoreCase("PI")) {
                                     mod.setPI(extCount);
+                                }else if (envList.get(j).equalsIgnoreCase("REIT")) {
+                                    mod.setREIT(extCount);
                                 }
                                 if (extCount != 0) {
                                     kpiCount.put(extStatus.get(m) + subList.get(i), mod);

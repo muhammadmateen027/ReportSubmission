@@ -50,7 +50,6 @@ public class EmailClass implements QueryHandlerInterface {
         String link = "";
 
         if (!id.equalsIgnoreCase("")) {
-            
 
             Utils.showMsg("Id: " + id);
             String emailSubject = "";
@@ -59,28 +58,28 @@ public class EmailClass implements QueryHandlerInterface {
             String message = "";
 
             if (status.equalsIgnoreCase("Pending approval")) {
-                link = Utils.getlink(server, "manager_approval", id, refNo);
+                link = Utils.getlink(server, "manager_approval", id, refNo, status);
                 to = manager_id;
                 cc = team_leader;
                 emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " is pending for your approval.";
             } else if (status.equalsIgnoreCase("Approved")) {
                 to = qh.getUserEmail(userId);
                 cc = team_leader;
-                link = Utils.getlink(server, "myRequests", id, refNo);
-                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been approved by "+ current_manager_name;
-            }else if (status.equalsIgnoreCase("Rejected")) {
+                link = Utils.getlink(server, "myRequests", id, refNo, status);
+                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been approved by " + current_manager_name;
+            } else if (status.equalsIgnoreCase("Rejected")) {
                 to = qh.getUserEmail(userId);
                 cc = team_leader;
-                link = Utils.getlink(server, "myRequests", id, refNo);
-                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been rejected by "+ current_manager_name;
-            } 
+                link = Utils.getlink(server, "myRequests", id, refNo, status);
+                emailSubject = "Revised KPI timeline for " + closing_month + " " + subject + " " + company + " has been rejected by " + current_manager_name;
+            }
 
-            message = "Dear Sir / Madam, \n\n"
-                    + "Please click the reference number to open the document :" + link
-                    + Utils.emailFooter();
+            message = "Dear Sir / Madam, \n\n" + "Please click on link to open the document --> " + link + Utils.emailFooter();
             if (to.equalsIgnoreCase("") || to == null) {
                 Utils.showMsg("No email");
-            } else Utils.composeEmail("", to, cc, emailSubject, message);
+            } else {
+                Utils.composeEmail("", to, cc, emailSubject, message);
+            }
 
             Utils.showMsg("Email Sent");
         }

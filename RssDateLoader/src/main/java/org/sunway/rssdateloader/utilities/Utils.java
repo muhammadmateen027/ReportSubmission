@@ -84,20 +84,20 @@ public class Utils {
     public static void showError(FormData mData, String elementId, String st) {
         mData.addFormError(elementId, st);
     }
-    
+
     public static String getKpiStatus(String internalDate) throws ParseException {
         String kpiStatus = "";
-        
+
         DateFormat formater = new SimpleDateFormat("dd-MM-yyyy");
-        
+
         Date currentDate = formater.parse(formater.format(new Date()));
         Date validDate = formater.parse(internalDate);
 
         if (currentDate.equals(validDate)) {
             kpiStatus = "Preparer Meet";
-        } else if(currentDate.compareTo(validDate) < 0) {
+        } else if (currentDate.compareTo(validDate) < 0) {
             kpiStatus = "Preparer Exceed";
-        } else if(currentDate.compareTo(validDate) > 0) {
+        } else if (currentDate.compareTo(validDate) > 0) {
             kpiStatus = "Preparer Delay";
         }
         return kpiStatus;
@@ -186,24 +186,32 @@ public class Utils {
                 + "Mon - Fri 9am to 6pm (GMT+08)\n";
     }
 
-    public static String getlink(String server, String linkDes, String recId, String refNo) {
-        Utils.showMsg("Server: "+server);
-        if (linkDes.equalsIgnoreCase("")) linkDes = "pending_tasks";
-        
-        linkDes = linkDes + "?_mode=edit&id="+recId;
-        
-        String link = server+"/jw/web/userview/fssrss/rss_home_page/_/"+linkDes;        
-        return "<a href="+link+ " target=_blank> "+refNo+" </a>";
+    public static String getlink(String server, String linkDes, String recId, String refNo, String status) {
+        Utils.showMsg("Server: " + server);
+        if (linkDes.equalsIgnoreCase("")) {
+            linkDes = "pending_tasks";
+        }
+
+        linkDes = linkDes + "?_mode=edit&id=" + recId;
+
+        String link = server + "/jw/web/userview/fssrss/rss_home_page/_/" + linkDes;
+        if (status.equalsIgnoreCase("Pending approval")) {
+            link = "<a href=" + link + " target=_blank>Approve/Reject</a>";
+        } else if (status.equalsIgnoreCase("Approved")) {
+            link = "<a href=" + link + " target=_blank>View</a>";
+        } else if (status.equalsIgnoreCase("Rejected")) {
+            link = "<a href=" + link + " target=_blank>View</a>";
+        }
+        return link;
     }
-    
+
     public static String getEnvVar(String appId, String envVar) {
         String result = "";
 
         try {
             AppService appService = (AppService) AppUtil.getApplicationContext().getBean("appService");
             AppDefinition appDef = appService.getAppDefinition(appId, "");
-            EnvironmentVariableDao environmentVariableDao = (EnvironmentVariableDao) 
-                    AppUtil.getApplicationContext().getBean("environmentVariableDao");
+            EnvironmentVariableDao environmentVariableDao = (EnvironmentVariableDao) AppUtil.getApplicationContext().getBean("environmentVariableDao");
             EnvironmentVariable evVar = environmentVariableDao.loadById(envVar, appDef);
             result = evVar.getValue();
         } catch (Exception e) {
@@ -214,8 +222,7 @@ public class Utils {
 
         return result;
     }
-    
-    
+
     public static void showMsg(String st) {
         LogUtil.info("Debugging QH" + "===> ", st);
     }

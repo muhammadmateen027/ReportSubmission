@@ -313,14 +313,19 @@ public class QueryHandler {
     }
 
     public void updateRecordStatusById(String id) {
-        String query = "UPDATE app_fd_rss_request_detail SET c_status = ? WHERE id = ? ";
+        String query = "UPDATE app_fd_rss_request_detail SET c_status = ?, c_timelines = ?, c_accuracy = ?, c_completeness = ?, c_relevance = ? WHERE id = ?";
+        
         Connection con = getDatabaseConnection();
         PreparedStatement stmtInsert;
         try {
             stmtInsert = con.prepareStatement(query);
 
-            stmtInsert.setString(1, "Closed");
-            stmtInsert.setString(2, id);
+            stmtInsert.setString(1, "Closed");            
+            stmtInsert.setString(2, "3");
+            stmtInsert.setString(3, "3");
+            stmtInsert.setString(4, "3");
+            stmtInsert.setString(5, "3");
+            stmtInsert.setString(6, id);
             stmtInsert.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);

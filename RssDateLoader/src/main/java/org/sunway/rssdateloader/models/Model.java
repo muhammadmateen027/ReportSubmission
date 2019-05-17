@@ -32,6 +32,7 @@ public class Model {
     int Medical=0;    
     int PDD=0;    
     int PI=0; 
+    int REIT=0;
     int preExceed=0;
     int preDelay=0;
     int preMeet=0;
@@ -46,6 +47,13 @@ public class Model {
     
     public Model(){}
     
+    public int getREIT() {
+        return REIT;
+    }
+
+    public void setREIT(int REIT) {
+        this.REIT = REIT;
+    }
     public int getPreExceed() {
         return preExceed;
     }
